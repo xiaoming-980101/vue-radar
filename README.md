@@ -116,7 +116,7 @@ npm run fetch-skills
 小预算也能跑通，硬件反馈明确，适合从 ESP32 和 Raspberry Pi 起步。
 
 ### 明星项目（stars）
-基于 GitHub Trending，追踪本周增长最快的开源项目。
+基于 GitHub topic 候选池和本地快照，追踪最近一次更新中增长最快的开源项目。
 
 ## 技术栈
 

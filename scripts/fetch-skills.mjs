@@ -8,6 +8,19 @@ const OUTPUT_PATH = resolve(__dirname, '../src/data/skills.json')
 const SKILLS_HTML_PATH = resolve(__dirname, '../public/skills.html')
 const TAGLINE_ZH_PATH = resolve(__dirname, '../src/data/tagline-zh.json')
 
+const githubToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || ''
+
+function githubHeaders() {
+  const headers = {
+    'Accept': 'application/vnd.github.v3+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  }
+  if (githubToken) {
+    headers.Authorization = `Bearer ${githubToken}`
+  }
+  return headers
+}
+
 let taglineZh = {}
 try {
   taglineZh = JSON.parse(readFileSync(TAGLINE_ZH_PATH, 'utf8'))
@@ -73,7 +86,7 @@ function extractGitHubRepo(url) {
 async function fetchGitHubStars(repo) {
   try {
     const res = await fetch(`https://api.github.com/repos/${repo}`, {
-      headers: { 'Accept': 'application/vnd.github.v3+json' }
+      headers: githubHeaders()
     })
     if (!res.ok) return null
     const data = await res.json()

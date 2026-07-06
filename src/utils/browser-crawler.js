@@ -1,3 +1,15 @@
+function hashString(value) {
+  let hash = 0
+  for (let i = 0; i < value.length; i++) {
+    hash = ((hash << 5) - hash + value.charCodeAt(i)) | 0
+  }
+  return Math.abs(hash)
+}
+
+function stableScore(repo, metric, min, range) {
+  return min + (hashString(`${repo}:${metric}`) % range)
+}
+
 export async function fetchTrendingBrowser(password, onProgress, githubToken = '') {
   const VALID_PASSWORD = '955976'
   if (password !== VALID_PASSWORD) {
@@ -8,11 +20,13 @@ export async function fetchTrendingBrowser(password, onProgress, githubToken = '
     'Accept': 'application/vnd.github.v3+json'
   }
   if (githubToken) {
-    headers['Authorization'] = `token ${githubToken}`
+    headers['Authorization'] = `Bearer ${githubToken}`
   }
 
   const allProjects = []
   const seenRepos = new Set()
+  const cached = loadTrendingFromStorage()
+  const previousProjects = new Map((cached?.projects?.projects || []).map(project => [project.repo, project]))
 
   const topics = [
     'ai-agents', 'self-hosted', 'esp32', 'webgl', 'home-assistant',
@@ -27,13 +41,16 @@ export async function fetchTrendingBrowser(password, onProgress, githubToken = '
       const url = `https://api.github.com/search/repositories?q=topic:${topic}&sort=stars&order=desc&per_page=10`
       const res = await fetch(url, { headers })
 
-      if (res.status === 403) {
+      if (res.status === 403 || res.status === 429) {
         const resetTime = res.headers.get('X-RateLimit-Reset')
         const resetDate = resetTime ? new Date(resetTime * 1000).toLocaleTimeString() : '未知'
         throw new Error(`API 速率限制，请${githubToken ? '检查 Token 是否有效' : '提供 GitHub Token'}，重置时间: ${resetDate}`)
       }
 
-      if (!res.ok) continue
+      if (!res.ok) {
+        const detail = await res.text().catch(() => '')
+        throw new Error(`GitHub API: ${res.status}${detail ? ` ${detail.slice(0, 120)}` : ''}`)
+      }
 
       const data = await res.json()
 
@@ -47,7 +64,7 @@ export async function fetchTrendingBrowser(password, onProgress, githubToken = '
           tagline: TAGLINE_ZH[item.full_name] || item.description || '',
           language: item.language || 'Unknown',
           totalStars: item.stargazers_count,
-          weeklyStars: 0,
+          weeklyStars: Math.max(0, item.stargazers_count - (previousProjects.get(item.full_name)?.totalStars || item.stargazers_count)),
           url: item.html_url,
           topic: topic,
         })
@@ -60,9 +77,13 @@ export async function fetchTrendingBrowser(password, onProgress, githubToken = '
     }
   }
 
+  if (allProjects.length < 40) {
+    throw new Error(`抓取结果只有 ${allProjects.length} 个项目，低于安全阈值，已停止更新缓存。`)
+  }
+
   onProgress?.('正在排序项目...')
 
-  allProjects.sort((a, b) => b.totalStars - a.totalStars)
+  allProjects.sort((a, b) => (b.weeklyStars - a.weeklyStars) || b.totalStars - a.totalStars)
 
   const starData = allProjects.slice(0, 50).map((p, i) => ({
     id: `stars-${i + 1}`,
@@ -72,10 +93,10 @@ export async function fetchTrendingBrowser(password, onProgress, githubToken = '
     ...p,
     trendingRank: i + 1,
     mvp: `探索 ${p.name.split('/')[1]} 项目，了解其核心功能和使用场景。`,
-    wow: Math.min(95, 70 + Math.floor(Math.random() * 25)),
-    useful: Math.min(95, 70 + Math.floor(Math.random() * 25)),
-    easy: Math.min(95, 50 + Math.floor(Math.random() * 40)),
-    stack: [p.language, `+${p.totalStars} stars`, `Topic: ${p.topic}`],
+    wow: stableScore(p.repo, 'wow', 70, 25),
+    useful: stableScore(p.repo, 'useful', 70, 25),
+    easy: stableScore(p.repo, 'easy', 50, 40),
+    stack: [p.language, p.weeklyStars ? `本次 +${p.weeklyStars}` : `${p.totalStars} stars`, `Topic: ${p.topic}`],
   }))
 
   return {

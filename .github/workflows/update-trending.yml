@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   update-trending:
     runs-on: ubuntu-latest
@@ -16,12 +19,19 @@ jobs:
           node-version: '20'
 
       - name: Fetch GitHub Trending
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/fetch-trending.mjs
+
+      - name: Fetch Skills Data
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/fetch-skills.mjs
 
       - name: Commit and push
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/data/github-trending.json
+          git add src/data/github-trending.json src/data/skills.json
           git diff --staged --quiet || git commit -m "chore: update GitHub trending data"
-          git push
+          git push origin HEAD:main

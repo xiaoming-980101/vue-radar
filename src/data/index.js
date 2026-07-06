@@ -35,7 +35,7 @@ export const starTrack = {
   short: "明星",
   nav: "明星项目",
   accent: "#111827",
-  summary: "基于 GitHub Trending weekly 候选池，并按本周新增 stars 重新排序，追踪正在冒头的开源项目。",
+  summary: "基于 GitHub topic 候选池和本地快照排序，追踪正在冒头的开源项目。",
 }
 
 export const boardTabs = [...tracks, starTrack]
@@ -138,6 +138,18 @@ export const skillCatalog = {
     url: "https://github.com/getsentry/skills",
     description: "公开项目上线后，用来定位错误、修 issue、维护监控接入。",
   },
+  "agent-skills": {
+    name: "Addy Osmani Agent Skills",
+    signal: "工程 Skill · 68.4k stars",
+    url: "https://github.com/addyosmani/agent-skills",
+    description: "生产级 AI coding agent 工程 Skill，适合让 Codex 更稳定地读项目、改代码、跑验收。",
+  },
+  "skillspector": {
+    name: "NVIDIA SkillSpector",
+    signal: "安全扫描 · +1,387/7d",
+    url: "https://github.com/NVIDIA/SkillSpector",
+    description: "安装第三方 Skill 前先扫描危险命令、可疑网络请求和高风险权限。",
+  },
 }
 
 export const defaultSkillIds = {
@@ -197,6 +209,24 @@ export const projectSkillOverrides = {
   "roboflow/supervision": ["huggingface-skills", "github-cli", "playwright-skill"],
   "Open-LLM-VTuber/Open-LLM-VTuber": ["openai-docs", "huggingface-skills", "github-cli"],
   "CopilotKit/CopilotKit": ["github-cli", "shadcn-skill", "playwright-skill"],
+  "calesthio/OpenMontage": ["github-cli", "huggingface-skills", "canva-skills"],
+  "google-labs-code/design.md": ["frontend-design", "figma-skills", "github-cli"],
+  "topoteretes/cognee": ["openai-docs", "github-cli", "document-skills"],
+  "JCodesMore/ai-website-cloner-template": ["github-cli", "frontend-design", "playwright-skill"],
+  "ZhuLinsen/daily_stock_analysis": ["openai-docs", "github-cli", "document-skills"],
+  "addyosmani/agent-skills": ["agent-skills", "github-cli", "playwright-skill"],
+  "apple/container": ["github-cli", "openai-docs", "document-skills"],
+  "phuryn/pm-skills": ["openai-skills", "document-skills", "github-cli"],
+  "NVIDIA/SkillSpector": ["skillspector", "github-cli", "document-skills"],
+  "DeusData/codebase-memory-mcp": ["github-cli", "openai-docs", "document-skills"],
+  "palmier-io/palmier-pro": ["github-cli", "canva-skills", "huggingface-skills"],
+  "jamiepine/voicebox": ["github-cli", "huggingface-skills", "openai-docs"],
+  "simplex-chat/simplex-chat": ["github-cli", "document-skills", "playwright-skill"],
+  "Stirling-Tools/Stirling-PDF": ["document-skills", "github-cli", "playwright-skill"],
+  "chatwoot/chatwoot": ["github-cli", "shadcn-skill", "playwright-skill"],
+  "kenn-io/agentsview": ["github-cli", "openai-docs", "document-skills"],
+  "microsoft/PowerToys": ["github-cli", "document-skills", "playwright-skill"],
+  "PaddlePaddle/PaddleOCR": ["document-skills", "github-cli", "huggingface-skills"],
 }
 
 export const projectSkillLimits = {
@@ -1059,6 +1089,28 @@ export const projectGroups = {
   ]
 }
 
+export const projectDemoUrls = {
+  "AI 小镇 / NPC 社交游戏": "https://www.convex.dev/ai-town",
+  "手势控制小游戏 / 手势乐器": "https://collidingscopes.github.io/threejs-handtracking-101/",
+  "节点式视觉实验室": "https://graphite.art",
+  "浏览器里的迷你音频工作站": "https://audiomass.co",
+  "物理沙盒 / 像素炼金术": "https://sandspiel.club",
+  "浏览器现场视觉合成器": "https://hydra.ojack.xyz",
+  "多人涂鸦白板游戏": "https://www.tldraw.com",
+  "24 小时人生拨盘": "https://linearclocklab.com/",
+  "手绘风白板 / 灵感草图板": "https://excalidraw.com",
+  "WebGL 流体玩具": "https://paveldogreat.github.io/WebGL-Fluid-Simulation/",
+  "浏览器合成器面板": "https://jss.michaelkolesidis.com",
+  "2D 闯关小游戏": "https://remarkablegames.org/phaser-platformer/",
+  "物理弹球 / 多米诺实验": "https://lonekorean.github.io/javascript-physics/",
+  "拖拽式海报编辑器": "https://ikuaitu.github.io/doc/#/",
+  "代码动画课件": "https://motioncanvas.io",
+  "React 视频渲染工厂": "https://www.remotion.dev/",
+  "节点流程玩具": "https://reactflow.dev/examples",
+  "文本生成图表魔法": "https://mermaid.live",
+  "数据可视化玩具箱": "https://app.rawgraphs.io/",
+}
+
 export const projectTagOverrides = {
   "AI 小镇 / NPC 社交游戏": ["AI 角色实验", "角色记忆", "小地图剧情"],
   "手势控制小游戏 / 手势乐器": ["摄像头手势", "体感控制", "音效反馈"],
@@ -1150,6 +1202,34 @@ export const projectTagOverrides = {
   "rtl_433 无线传感器雷达": ["SDR 监听", "433 信号", "传感器雷达"],
   "openHASP 墙面控制屏": ["墙面触屏", "场景面板", "MQTT 页面"],
   "Mainsail 3D 打印仪表盘": ["Klipper 仪表盘", "温度进度", "文件预览"],
+  "手绘风 UI 组件参考": ["手绘组件", "草稿质感", "原型可视化"],
+  "浏览器 3D 小展厅 / A-Frame 示例": ["3D 展厅", "五件展品", "漫游说明牌"],
+  "像素 / 粒子编辑器": ["粒子编辑器", "配置导出", "PixiJS 画布"],
+  "React 3D 产品模型参考": ["源码参考", "交互热点", "旋转截图"],
+  "字体扭曲效果库": ["字体扭曲", "GLSL 标题", "封面效果"],
+  "harry0703/MoneyPrinterTurbo": ["短视频流水线", "本周爆发", "脚本到成片"],
+  "Lum1104/Understand-Anything": ["代码图谱", "仓库问答", "模块关系"],
+  "microsoft/markitdown": ["文件转 Markdown", "AI 阅读入口", "Office 处理"],
+  "Leonxlnx/taste-skill": ["去模板味", "审美增强", "输出对比"],
+  "colbymchenry/codegraph": ["本地图谱", "少用 Token", "架构问答"],
+  "affaan-m/ECC": ["代理优化", "记忆流程", "开发环境增强"],
+  "rohitg00/ai-engineering-from-scratch": ["AI 工程路线", "Notebook 实践", "学习进度板"],
+  "mukul975/Anthropic-Cybersecurity-Skills": ["安全技能库", "框架映射", "审查流程"],
+  "hardikpandya/stop-slop": ["去 AI 味", "自然改写", "Skill 文件"],
+  "calesthio/OpenMontage": ["AI 视频工厂", "脚本到成片", "本周爆发"],
+  "google-labs-code/design.md": ["设计记忆", "AI 视觉规范", "DESIGN.md"],
+  "topoteretes/cognee": ["长期记忆", "知识图谱", "Agent 记住上下文"],
+  "JCodesMore/ai-website-cloner-template": ["网页克隆", "视觉复刻", "一条命令"],
+  "ZhuLinsen/daily_stock_analysis": ["行情看板", "新闻摘要", "自动推送"],
+  "chopratejas/headroom": ["Token 压缩", "长日志救星", "RAG 节省"],
+  "DeusData/codebase-memory-mcp": ["代码库记忆", "少用 Token", "MCP 索引"],
+  "Panniantong/Agent-Reach": ["全网搜索", "零 API 费", "多平台证据"],
+  "palmier-io/palmier-pro": ["AI 视频编辑", "macOS 剪辑", "字幕素材"],
+  "jamiepine/voicebox": ["AI 语音工作室", "声音克隆", "配音生成"],
+  "simplex-chat/simplex-chat": ["隐私聊天", "无用户 ID", "端到端通信"],
+  "Stirling-Tools/Stirling-PDF": ["PDF 工具箱", "本地处理", "OCR 转换"],
+  "anthropics/knowledge-work-plugins": ["知识工作插件", "资料整理", "会议准备"],
+  "EveryInc/compound-engineering-plugin": ["工程拆解", "任务切片", "可执行 Prompt"],
 }
 
 export const projectTagRules = [
@@ -1217,7 +1297,7 @@ export const starterOptions = {
     { id: "fun", label: "给朋友演示", description: "偏好互动、视觉、游戏和 wow moment。" },
     { id: "useful", label: "自己日常用", description: "偏好工作流、资料整理和效率工具。" },
     { id: "hardware", label: "动手搓设备", description: "偏好有真实设备反馈的硬件项目。" },
-    { id: "frontier", label: "追前沿动态", description: "偏好本周增长最快的新鲜 GitHub 项目。" },
+    { id: "frontier", label: "追前沿动态", description: "偏好快照增长最快的新鲜 GitHub 项目。" },
   ],
   skill: [
     { id: "beginner", label: "刚开始", description: "更看重友好度、步骤清晰和少踩坑。" },
@@ -1291,7 +1371,7 @@ export const focusHeaderNotes = {
   fun: ["互动反馈优先", "一天内可演示", "适合做给朋友看"],
   useful: ["日常工作流优先", "做完马上能用", "适合长期迭代"],
   hardware: ["真实设备反馈", "桌面可见成果", "适合边买边做"],
-  stars: ["本周增长优先", "GitHub Trending 候选", "适合追前沿动态"],
+  stars: ["快照增长优先", "GitHub topic 候选", "适合追前沿动态"],
 }
 
 export const focusPalettes = {
@@ -1323,6 +1403,7 @@ export const projects = tracks.flatMap((track) =>
     track: track.id,
     rank: index + 1,
     ...project,
+    demoUrl: project.demoUrl || projectDemoUrls[project.name],
   }))
 )
 

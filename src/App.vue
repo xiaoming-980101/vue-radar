@@ -9,11 +9,12 @@ import {
   projects, formatCount, formatUpdatedDate, projectStack, projectText
 } from './data/index.js'
 import { githubStarProjects as defaultStarProjects, githubTrendingUpdatedAt as defaultUpdatedAt } from './data/index.js'
-import { fetchAllBrowser, loadTrendingFromStorage } from './utils/browser-crawler.js'
+import staticSkillsData from './data/skills.json'
+import { fetchAllBrowser, fetchTrendingBrowser, loadTrendingFromStorage } from './utils/browser-crawler.js'
 
 const starProjects = ref(defaultStarProjects)
 const starUpdatedAt = ref(defaultUpdatedAt)
-const fetchedSkills = ref([])
+const fetchedSkills = ref(staticSkillsData.skills ?? [])
 
 onMounted(() => {
   const cached = loadTrendingFromStorage()
@@ -157,8 +158,113 @@ function skillUseReason(project, skill) {
     'lark-cli': '用来把飞书文档、多维表格、会议纪要、日历和任务接进自动化，适合中文团队工作流项目。',
     'openai-skills': '用来查官方 Skill 安装与触发方式，给 Codex 补工具能力；它不是项目依赖，而是开工前的能力目录。',
     'openai-docs': '用来参考模型调用、流式输出、工具调用和结构化输出示例，适合需要接入 LLM 的项目。',
+    'agent-skills': '用来给 Codex 补一套工程化执行流程，适合需要稳定读代码、改代码、跑验收的开源项目复现。',
+    'skillspector': '用来在安装或复用第三方 Skill 前先扫一遍风险，避免把危险命令和可疑权限直接交给 AI 执行。',
   }
   return useCases[skill.id] ?? skill.description
+}
+
+function projectPrimaryUrl(project) {
+  return project.demoUrl || project.url || '#'
+}
+
+function projectPrimaryActionLabel(project) {
+  return project.demoUrl ? '看演示' : '看来源'
+}
+
+function projectPrimaryHint(project) {
+  return project.demoUrl ? '先体验效果' : (project.source || project.repo || '项目来源')
+}
+
+function projectGrowthLabel(project) {
+  if (project.weeklyStars > 0) return `本次 +${formatCount(project.weeklyStars)}`
+  if (project.totalStars) return `${formatCount(project.totalStars)} total`
+  return '等待快照'
+}
+
+function projectScale(project) {
+  const text = projectText(project)
+  let score = 1
+
+  if (project.easy < 52) score += 1.55
+  else if (project.easy < 65) score += 1.05
+  else if (project.easy < 78) score += 0.55
+
+  if (project.track === 'hardware') score += 1.15
+  if (project.track === 'stars') score += 0.45
+  if (/docker|compose|k8s|kubernetes|数据库|database|postgres|mysql|redis|supabase|auth|权限|登录/.test(text)) score += 0.65
+  if (/llm|rag|agent|openai|模型|gradio|hugging face|tts|voice|语音|大模型/.test(text)) score += 0.55
+  if (/gpu|cuda|本地模型|stable diffusion|vtuber|webxr|frigate|coral/.test(text)) score += 0.95
+  if (/esp32|raspberry|mqtt|zigbee|固件|烧录|传感器|硬件|3d 打印|lora|sdr/.test(text)) score += 0.75
+  if (/webgl|three|canvas|phaser|pixi|p5|音频|音乐|实时|摄像头|hand tracking/.test(text)) score += 0.35
+  if (project.easy >= 82) score -= 0.25
+
+  const value = Math.max(1, Math.min(5, Math.round(score * 2) / 2))
+  const label = value <= 1.5 ? '轻松跑' : value <= 2.5 ? '有点折腾' : value <= 3.5 ? '需要耐心' : '新手慎入'
+  const hint =
+    value <= 1.5
+      ? '适合直接丢给 AI 开始做，先跑一个最小 demo。'
+      : value <= 2.5
+        ? '适合新手尝试，但开工前要先确认依赖和账号。'
+        : value <= 3.5
+          ? '建议让 AI 先做体检，再按最短路径跑通示例。'
+          : '先别盲目 clone，最好让 AI 把环境、配置和风险讲清楚再动手。'
+
+  return { value, label, hint, percent: `${Math.round((value / 5) * 100)}%` }
+}
+
+function projectVerdict(project) {
+  const scale = projectScale(project)
+  if (project.easy >= 76 && scale.value <= 2.5) {
+    return {
+      label: '推荐搓',
+      tone: 'good',
+      reason: `这个项目反馈比较直接，适合先做出「${project.mvp}」这样的可展示 demo。`,
+    }
+  }
+  if (scale.value >= 4 || project.easy <= 50) {
+    return {
+      label: '新手慎入',
+      tone: 'warn',
+      reason: '它很有吸引力，但开工前最好先让 AI 查清依赖、配置和替代方案。',
+    }
+  }
+  return {
+    label: '可以试试',
+    tone: 'ok',
+    reason: '适合用 AI 带着跑，但不要一上来做完整版，先收窄成一个最小可运行效果。',
+  }
+}
+
+function projectPrepItems(project) {
+  const text = projectText(project)
+  const items = ['项目链接', '一台电脑']
+
+  if (/llm|rag|agent|openai|模型|大模型|copilot|chat/.test(text)) items.push('API Key 或模型服务')
+  if (/docker|compose|open webui|dify|flowise|ragflow|n8n|paperless|immich/.test(text)) items.push('Docker')
+  if (/数据库|database|postgres|mysql|redis|supabase|auth|登录|权限/.test(text)) items.push('数据库/账号配置')
+  if (/pdf|office|word|excel|ppt|ocr|markdown|文档|票据|合同|发票/.test(text)) items.push('真实文件样本')
+  if (/webgl|three|canvas|phaser|pixi|p5|白板|图表|可视化|音频|音乐|摄像头/.test(text)) items.push('现代浏览器')
+  if (/esp32|raspberry|mqtt|zigbee|固件|烧录|传感器|硬件|3d 打印|lora|sdr/.test(text)) items.push('硬件配件和数据线')
+  if (/网页抓取|crawler|搜索|opencli|飞书|微信|平台|api|rss/.test(text)) items.push('网络/平台账号')
+  if (project.track === 'stars') items.push('先读 README')
+
+  return [...new Set(items)].slice(0, 5)
+}
+
+function projectRiskItems(project) {
+  const text = projectText(project)
+  const risks = []
+
+  if (project.easy < 58) risks.push('不要直接做完整版，先让 AI 找到最小可运行入口。')
+  if (/llm|rag|agent|openai|模型|大模型|tts|voice|语音/.test(text)) risks.push('可能会卡在 API Key、模型选择或网络访问上。')
+  if (/docker|compose|数据库|database|postgres|mysql|redis|supabase/.test(text)) risks.push('可能会卡在环境变量、端口或数据库连接上。')
+  if (/esp32|raspberry|mqtt|zigbee|固件|烧录|传感器|硬件|3d 打印|lora|sdr/.test(text)) risks.push('可能会卡在接线、烧录、设备型号或驱动上。')
+  if (/webgl|three|canvas|phaser|pixi|p5|webxr|摄像头|音频|音乐/.test(text)) risks.push('可能会卡在浏览器权限、素材路径或实时性能上。')
+  if (/pdf|office|ocr|文档|票据|合同|发票|markdown/.test(text)) risks.push('最好准备真实样本，不然 demo 容易只剩空界面。')
+  if (!risks.length) risks.push('先跑通原项目或官方示例，再决定要不要二次开发。')
+
+  return [...new Set(risks)].slice(0, 3)
 }
 
 function projectExperienceTags(project, limit = 4) {
@@ -168,7 +274,7 @@ function projectExperienceTags(project, limit = 4) {
   if (!overrideTags.length) {
     projectTagRules.forEach(rule => { if (rule.match.test(text)) tags.push(...rule.tags) })
   }
-  if (project.weeklyStars) tags.push(`本周 +${formatCount(project.weeklyStars)}`)
+  if (project.weeklyStars) tags.push(`本次 +${formatCount(project.weeklyStars)}`)
   if (tags.length < 2 && project.track === 'fun') tags.push('互动 Demo')
   if (tags.length < 2 && project.track === 'useful') tags.push('真实工作流')
   if (tags.length < 2 && project.track === 'hardware') tags.push('实体反馈')
@@ -226,7 +332,7 @@ function starterReason(project) {
   const track = trackById(project.track)
   const timeText = starterLabels.time[starterState.value.time]
   const goalText = starterLabels.goal[starterState.value.goal]
-  if (project.track === 'stars') return `适合想"${goalText}"的新手：本周增长 +${formatCount(project.weeklyStars)} stars，先复刻一个最小使用场景就能摸到前沿脉搏。`
+  if (project.track === 'stars') return `适合想"${goalText}"的新手：本次快照新增 +${formatCount(project.weeklyStars)} stars，先复刻一个最小使用场景就能摸到前沿脉搏。`
   if (project.track === 'hardware') return `适合"${timeText}"动手：反馈来自真实设备，按 MVP 做出一个可见/可测的小结果。`
   return `适合"${timeText}"开工：${track.short}方向匹配"${goalText}"，先把 MVP 做成可演示版本。`
 }
@@ -265,9 +371,15 @@ function buildStarterPlan(project) {
   const estimate = project.easy >= 78 ? '2-4 小时' : project.easy >= 62 ? '1-2 天' : '3-7 天'
   const sourceName = project.source || project.repo || project.name
   const sourceUrl = project.url || '#'
+  const demoUrl = project.demoUrl || ''
+  const primaryUrl = projectPrimaryUrl(project)
   const sourceType = sourceUrl.includes('github.com') ? 'GitHub 项目' : '参考项目/官方文档'
   const skills = recommendedSkills(project)
-  const skillPromptLines = skills.map((skill, i) => `${i + 1}. ${skill.name}：${skill.url}\n   用法：${skillUseReason(project, skill)}`).join('\n')
+  const scale = projectScale(project)
+  const verdict = projectVerdict(project)
+  const prepItems = projectPrepItems(project)
+  const risks = projectRiskItems(project)
+  const skillPromptLines = skills.map((skill, i) => `${i + 1}. ${skill.name}：${skill.url}\n   什么时候用：${skillUseReason(project, skill)}`).join('\n')
   const firstStep = project.track === 'hardware'
     ? '先打开参考项目或官方文档，列出已有设备和需要购买的最小配件，只接一个传感器、灯带、屏幕或控制对象。'
     : project.track === 'stars'
@@ -281,21 +393,44 @@ function buildStarterPlan(project) {
   ]
   const files = starterFileStructure(project)
   const codexPrompt = [
-    '你是 Codex，请和我一起把这个项目做成可运行 demo。',
-    `我想做「${project.name}」的 MVP。`,
+    '你是 Codex，请帮我判断并复现一个 GitHub / 开源项目。',
+    '',
+    `项目名称：${project.name}`,
     `项目方向：${track.title}`,
+    `项目链接：${sourceUrl}`,
+    demoUrl ? `演示入口：${demoUrl}` : '',
     `参考来源：${sourceName}`,
-    `推荐项目链接 / GitHub 链接：${sourceUrl}`,
-    `推荐 Skill / 工具链接：\n${skillPromptLines}`,
-    `目标演示：${project.mvp}`,
-    `请帮我先做一个最小可运行版本，控制范围在 ${estimate} 内。`,
-    `请先阅读这个${sourceType}的 README、安装说明、示例、demo 或官方文档，判断能否直接 clone、fork、复现、改造或借鉴核心玩法。`,
-    '如果我的环境支持上面的 Skill 或 CLI，请优先安装/启用它们；如果暂时不支持，就把这些链接作为参考资料读完，再模拟同样的工作流来执行。',
-    '优先让原项目或它的最小示例跑起来；如果原项目太复杂、依赖太重或不适合直接运行，再抽取最有趣/最实用的核心体验，做一个轻量可运行版本。',
-    '请你根据项目特点自主选择最合适的实现方案；除非必要，不要让我先决定框架或库。',
-    '请先给出文件结构和实现步骤，然后直接创建代码；优先做可运行 demo，不要做营销页。',
-  ].join('\n')
-  return { estimate, firstStep, steps, files, sourceName, sourceUrl, skills, codexPrompt }
+    `我想先做出的效果：${project.mvp}`,
+    `建议控制范围：${estimate}`,
+    '',
+    '请先不要急着写代码，先做一次项目体检：',
+    `1. 阅读这个${sourceType}的 README、安装说明、示例和依赖文件。`,
+    '2. 基于项目文档和实际依赖，评估它对新手是否值得搓、难度大概在哪里、开工前需要准备什么。',
+    '3. 找出最可能卡住的地方，例如 API Key、Docker、数据库、模型、硬件、浏览器权限或网络问题。',
+    '4. 如果没有明显硬阻碍，请优先按原项目文档在我电脑上跑起来，不要一上来重写或缩水成简化版。',
+    '5. 只有当原项目因为账号、依赖、网络、硬件或服务限制暂时跑不通时，才做保真降级 demo；降级也要保留它最核心、最好玩的玩法和交互。',
+    `6. 对这个项目，降级版至少要保留「${project.mvp}」这类核心效果，不能只做一个普通空壳页面。`,
+    '7. 遇到报错时，请先定位原因，再给出修复方案，不要盲目重装。',
+    '',
+    '可参考的 Skill / 工具链接：',
+    skillPromptLines,
+  ].filter(Boolean).join('\n')
+  return {
+    estimate,
+    firstStep,
+    steps,
+    files,
+    sourceName,
+    sourceUrl,
+    demoUrl,
+    primaryUrl,
+    skills,
+    scale,
+    verdict,
+    prepItems,
+    risks,
+    codexPrompt,
+  }
 }
 
 function starterFileStructure(project) {
@@ -312,7 +447,16 @@ function skillBundleMarkdown(project) {
   ).join('\n')
   return [
     `# ${project.name} · Skill 开工清单`, '',
-    `项目来源：${plan.sourceName}`, `项目链接：${plan.sourceUrl}`, `预计用时：${plan.estimate}`, '',
+    `项目来源：${plan.sourceName}`,
+    `项目链接：${plan.sourceUrl}`,
+    plan.demoUrl ? `演示入口：${plan.demoUrl}` : '',
+    `预计用时：${plan.estimate}`,
+    `开工判断：${plan.verdict.label}，${plan.scale.label}`,
+    '',
+    '## 开工前检查',
+    `先准备：${plan.prepItems.join('、')}`,
+    `可能卡点：${plan.risks.join('；')}`,
+    '',
     '## 推荐使用的 Skill', skillLines, '',
     '## 复制给 Codex 的 Prompt', '', '```text', plan.codexPrompt, '```', '',
     '## 使用方式',
@@ -504,7 +648,7 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
           <div>
             <p class="section-kicker">Rising This Week</p>
             <h2>明星项目</h2>
-            <p>本周增长最快的 GitHub 项目，来自 GitHub Trending weekly 候选池，并按 "stars this week" 重新排序。</p>
+            <p>来自 GitHub Search topic 池和本地快照的开源项目；有历史快照时显示本次新增 stars，没有快照时显示总 stars。</p>
           </div>
           <div class="star-actions">
             <button class="star-tab-button" type="button" @click="setTrack('stars')">增长最快的 GitHub 项目</button>
@@ -514,7 +658,7 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
         <div class="star-showcase-grid" aria-label="明星项目展示">
           <template v-if="starProjects.length > 0">
             <a class="star-card star-card-lead" :href="starProjects[0].url" target="_blank" rel="noreferrer">
-              <div class="star-card-top"><span>#1</span><em>{{ formatCount(starProjects[0].totalStars || 0) }} stars</em></div>
+              <div class="star-card-top"><span>#1</span><em>{{ projectGrowthLabel(starProjects[0]) }}</em></div>
               <strong>{{ starProjects[0].name }}</strong>
               <p>{{ starProjects[0].tagline }}</p>
               <div class="star-card-meta">
@@ -523,7 +667,7 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
             </a>
             <div class="star-mini-grid">
               <a v-for="p in starProjects.slice(1, 6)" :key="p.id" class="star-card" :href="p.url" target="_blank" rel="noreferrer">
-              <div class="star-card-top"><span>#{{ p.rank }}</span><em>{{ formatCount(p.weeklyStars || p.totalStars || 0) }} stars</em></div>
+              <div class="star-card-top"><span>#{{ p.rank }}</span><em>{{ projectGrowthLabel(p) }}</em></div>
               <strong>{{ p.name }}</strong>
               <p>{{ p.tagline }}</p>
               <div class="star-card-meta">
@@ -601,8 +745,8 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
               <button type="button" class="plan-button action-tile" @click="openPlan(project.id)">
                 <span>生成开工计划</span><em>步骤 + Prompt</em>
               </button>
-              <a class="source-link action-tile" :href="project.url" target="_blank" rel="noreferrer">
-                <span>看来源</span><em>{{ project.source }}</em>
+              <a class="source-link action-tile" :href="projectPrimaryUrl(project)" target="_blank" rel="noreferrer">
+                <span>{{ projectPrimaryActionLabel(project) }}</span><em>{{ projectPrimaryHint(project) }}</em>
               </a>
             </div>
           </article>
@@ -697,8 +841,8 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
                       <button type="button" class="plan-button action-tile" @click="openPlan(project.id)">
                         <span>带 Skill 开工</span><em>Prompt + links</em>
                       </button>
-                      <a class="source-link action-tile" :href="project.url" target="_blank" rel="noreferrer">
-                        <span>看来源</span><em>{{ project.source }}</em>
+                      <a class="source-link action-tile" :href="projectPrimaryUrl(project)" target="_blank" rel="noreferrer">
+                        <span>{{ projectPrimaryActionLabel(project) }}</span><em>{{ projectPrimaryHint(project) }}</em>
                       </a>
                     </div>
                   </footer>
@@ -733,15 +877,15 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
             </div>
             <footer class="card-footer">
               <div class="card-stat">
-                <span>{{ project.track === 'stars' ? 'Weekly' : 'Skills' }}</span>
-                <strong>{{ project.track === 'stars' ? formatCount(project.totalStars || 0) + ' stars' : recommendedSkills(project).length + ' 个' }}</strong>
+                <span>{{ project.track === 'stars' ? 'Growth' : 'Skills' }}</span>
+                <strong>{{ project.track === 'stars' ? projectGrowthLabel(project) : recommendedSkills(project).length + ' 个' }}</strong>
               </div>
               <div class="card-actions">
                 <button type="button" class="plan-button action-tile" @click="openPlan(project.id)">
                   <span>带 Skill 开工</span><em>Prompt + links</em>
                 </button>
-                <a class="source-link action-tile" :href="project.url" target="_blank" rel="noreferrer">
-                  <span>看来源</span><em>{{ project.source }}</em>
+                <a class="source-link action-tile" :href="projectPrimaryUrl(project)" target="_blank" rel="noreferrer">
+                  <span>{{ projectPrimaryActionLabel(project) }}</span><em>{{ projectPrimaryHint(project) }}</em>
                 </a>
               </div>
             </footer>
@@ -775,7 +919,7 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
             <input type="radio" v-model="fetchMode" value="skills" /> 仅 Skill
           </label>
         </div>
-        <div class="fetch-hint">没有 Token 每小时只能请求 10 次，有 Token 可请求 30 次</div>
+        <div class="fetch-hint">GitHub Search API 未登录额度很低，建议填 Token；抓取结果会先存在本机浏览器缓存。</div>
         <div class="fetch-status" v-if="fetchStatus">{{ fetchStatus }}</div>
         <div class="fetch-actions">
           <button type="button" class="fetch-cancel" @click="showFetchDialog = false">取消</button>
@@ -811,9 +955,9 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
 
     <section v-if="fetchedSkills.length > 0" class="section-shell fetched-skills-section" id="fetched-skills">
       <div>
-        <p class="section-kicker">Fetched Skills</p>
-        <h2>爬取的 Skill 数据</h2>
-        <p>从 GitHub API 获取的最新 Skill 项目，按 stars 排序。</p>
+        <p class="section-kicker">Skill Radar</p>
+        <h2>推荐 Skill 数据</h2>
+        <p>默认使用仓库内置的最新快照；手动刷新后会优先展示浏览器缓存里的 GitHub 数据。</p>
       </div>
       <div class="fetched-skills-grid">
         <a v-for="skill in fetchedSkills.slice(0, 12)" :key="skill.id" class="fetched-skill-card" :href="skill.url" target="_blank" rel="noreferrer">
@@ -837,22 +981,69 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
             <h2>{{ escapeHtml(activePlanProject.name) }}</h2>
             <p>{{ escapeHtml(activePlanProject.tagline) }}</p>
           </div>
-          <button type="button" class="plan-close" @click="closePlan" aria-label="关闭开工计划">×</button>
+          <div class="plan-dialog-controls">
+            <button type="button" class="copy-plan plan-copy-top" @click="copyPlanPrompt">复制 Prompt</button>
+            <a class="plan-header-source" :href="buildStarterPlan(activePlanProject).primaryUrl" target="_blank" rel="noreferrer">
+              {{ buildStarterPlan(activePlanProject).demoUrl ? '打开演示入口' : '打开项目来源' }}
+            </a>
+            <button type="button" class="plan-close" @click="closePlan" aria-label="关闭开工计划">×</button>
+          </div>
         </header>
         <div class="plan-overview">
           <div class="plan-meta">
             <span>{{ trackById(activePlanProject.track).title }}</span>
             <span>预计 {{ buildStarterPlan(activePlanProject).estimate }}</span>
-            <span>复制 Prompt 已带项目链接</span>
+            <span>{{ buildStarterPlan(activePlanProject).verdict.label }}</span>
+            <span>Scale {{ buildStarterPlan(activePlanProject).scale.value }}/5</span>
             <span v-for="tag in projectExperienceTags(activePlanProject, 2)" :key="tag">{{ tag }}</span>
           </div>
-          <a class="plan-source-card" :href="escapeHtml(buildStarterPlan(activePlanProject).sourceUrl)" target="_blank" rel="noreferrer">
-            <span>推荐项目入口</span>
+          <a class="plan-source-card" :href="buildStarterPlan(activePlanProject).primaryUrl" target="_blank" rel="noreferrer">
+            <span>{{ buildStarterPlan(activePlanProject).demoUrl ? '演示优先' : '推荐项目入口' }}</span>
             <strong>{{ escapeHtml(buildStarterPlan(activePlanProject).sourceName) }}</strong>
-            <em>{{ escapeHtml(buildStarterPlan(activePlanProject).sourceUrl) }}</em>
+            <em>{{ escapeHtml(buildStarterPlan(activePlanProject).primaryUrl) }}</em>
           </a>
         </div>
+        <div class="plan-diagnosis">
+          <section class="plan-verdict-card" :class="`plan-verdict-${buildStarterPlan(activePlanProject).verdict.tone}`">
+            <span>值不值得搓</span>
+            <strong>{{ buildStarterPlan(activePlanProject).verdict.label }}</strong>
+            <p>{{ escapeHtml(buildStarterPlan(activePlanProject).verdict.reason) }}</p>
+          </section>
+          <section class="plan-scale-card">
+            <div>
+              <span>难不难</span>
+              <strong>Scale {{ buildStarterPlan(activePlanProject).scale.value }}/5</strong>
+            </div>
+            <div class="plan-scale-meter" :aria-label="`项目难度 Scale ${buildStarterPlan(activePlanProject).scale.value}/5`">
+              <i :style="{ width: buildStarterPlan(activePlanProject).scale.percent }"></i>
+            </div>
+            <p>{{ buildStarterPlan(activePlanProject).scale.label }}：{{ buildStarterPlan(activePlanProject).scale.hint }}</p>
+          </section>
+          <section class="plan-prep-card">
+            <span>先准备什么</span>
+            <div class="plan-prep-list">
+              <em v-for="item in buildStarterPlan(activePlanProject).prepItems" :key="item">{{ item }}</em>
+            </div>
+          </section>
+        </div>
         <div class="plan-grid">
+          <section class="plan-block plan-demo-block">
+            <h3>先做这个效果</h3>
+            <p>{{ escapeHtml(activePlanProject.mvp) }}</p>
+          </section>
+          <section class="plan-block plan-risk-block">
+            <h3>可能会卡在这里</h3>
+            <ul class="plan-list">
+              <li v-for="risk in buildStarterPlan(activePlanProject).risks" :key="risk">{{ risk }}</li>
+            </ul>
+          </section>
+          <a v-if="buildStarterPlan(activePlanProject).demoUrl"
+            class="plan-source-card plan-demo-link-card"
+            :href="buildStarterPlan(activePlanProject).demoUrl" target="_blank" rel="noreferrer">
+            <span>演示入口</span>
+            <strong>先看能不能跑出效果</strong>
+            <em>{{ escapeHtml(buildStarterPlan(activePlanProject).demoUrl) }}</em>
+          </a>
           <section class="plan-block">
             <h3>第一步</h3>
             <p>{{ escapeHtml(buildStarterPlan(activePlanProject).firstStep) }}</p>

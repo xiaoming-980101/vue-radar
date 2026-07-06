@@ -21,13 +21,18 @@ export function getGithubStarProjects() {
     language: project.language,
     totalStars: project.totalStars,
     weeklyStars: project.weeklyStars,
+    topic: project.topic,
     trendingRank: project.trendingRank,
     mvp: project.mvp,
     wow: project.wow,
     useful: project.useful,
     easy: project.easy,
     url: project.url,
-    stack: project.stack || [project.language, `+${project.weeklyStars || 0} / week`, `Trending #${project.trendingRank || index + 1}`],
+    stack: project.stack || [
+      project.language,
+      project.weeklyStars ? `本次 +${project.weeklyStars}` : `${project.totalStars || 0} stars`,
+      `Topic: ${project.topic || 'trending'}`
+    ],
   }))
 }
 
