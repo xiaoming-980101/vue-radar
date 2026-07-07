@@ -9,6 +9,7 @@
 - **新手选择器**：根据时间、目标、熟练度和硬件意愿，推荐最适合的项目
 - **开工计划**：为每个项目生成开工步骤、文件结构和 Codex Prompt
 - **必装 Skill**：推荐每个项目适合使用的 AI Skill 和 CLI 工具
+- **Codex 趣味用法**：整理可复制的 Codex 使用场景，覆盖电脑整理、网页流程、小游戏原型和代码审查
 
 ## 项目结构
 
@@ -17,6 +18,8 @@ vue-radar/
 ├── public/                    # 静态资源
 │   ├── skills.html           # 必装 Skill 页面
 │   ├── skills.css            # Skill 页面样式
+│   ├── codex-uses.html       # Codex 趣味用法页面
+│   ├── codex-uses.css        # Codex 用法页面样式
 │   ├── css2.css              # 字体样式
 │   └── script.js             # 统计脚本
 ├── src/
@@ -73,7 +76,14 @@ npm run build
 
 ### 自动更新（GitHub Actions）
 
-项目配置了 GitHub Actions，每天 UTC 00:00 自动爬取 GitHub 热门项目数据并提交到仓库。
+项目配置了 GitHub Actions，每天 UTC 00:00 自动爬取 GitHub 热门项目和 Skills 数据并提交到仓库。
+
+目前自动更新覆盖：
+
+- `src/data/github-trending.json`
+- `src/data/skills.json`
+
+`public/codex-uses.html` 属于人工整理的专题页，不会被自动覆盖。
 
 ### 手动更新
 

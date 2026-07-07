@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import {
-  tracks, starTrack, boardTabs, skillRadarUrl, skillCatalog,
+  tracks, starTrack, boardTabs, skillRadarUrl, codexUsesUrl, skillCatalog,
   defaultSkillIds, projectSkillOverrides, projectSkillLimits, projectSkillRules,
   projectGroups, projectTagOverrides, projectTagRules,
   starterOptions, starterGroupLabels, starterGroupHints, starterGroupStyles, starterLabels,
@@ -605,6 +605,7 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
               class="nav-pill" :class="{ active: state.track === track.id }"
               @click="setTrack(track.id)">{{ track.nav ?? track.short }}</button>
             <a class="nav-pill nav-pill-link nav-pill-skill" :href="skillRadarUrl">必装 Skill</a>
+            <a class="nav-pill nav-pill-link nav-pill-skill" :href="codexUsesUrl">Codex 用法</a>
           </nav>
         </header>
 
@@ -621,6 +622,7 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
               <a class="secondary-link" href="#board">查看榜单</a>
               <a class="secondary-link" href="#star-projects">明星项目</a>
               <a class="secondary-link" :href="skillRadarUrl">必装 Skill</a>
+              <a class="secondary-link" :href="codexUsesUrl">Codex 用法</a>
             </div>
           </div>
           <aside class="hero-panel" aria-label="榜单概览">

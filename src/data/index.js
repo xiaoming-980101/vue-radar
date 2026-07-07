@@ -40,6 +40,7 @@ export const starTrack = {
 
 export const boardTabs = [...tracks, starTrack]
 export const skillRadarUrl = "/skills.html?v=rising-skill-fix-20260608"
+export const codexUsesUrl = "/codex-uses.html?v=codex-uses-20260707"
 
 export const skillCatalog = {
   "openai-skills": {
