@@ -10,7 +10,7 @@ import {
 } from './data/index.js'
 import { githubStarProjects as defaultStarProjects, githubTrendingUpdatedAt as defaultUpdatedAt } from './data/index.js'
 import staticSkillsData from './data/skills.json'
-import { fetchAllBrowser, fetchTrendingBrowser, loadTrendingFromStorage } from './utils/browser-crawler.js'
+import { fetchAllBrowser, fetchSkillsBrowser, fetchTrendingBrowser, loadTrendingFromStorage } from './utils/browser-crawler.js'
 
 const starProjects = ref(defaultStarProjects)
 const starUpdatedAt = ref(defaultUpdatedAt)
@@ -60,7 +60,6 @@ async function doFetch() {
       starUpdatedAt.value = new Date(result.projects.updatedAt)
       fetchStatus.value = `成功! ${result.projects.projects.length} 个项目已更新`
     } else if (fetchMode.value === 'skills') {
-      const { fetchSkillsBrowser } = await import('./utils/browser-crawler.js')
       const result = await fetchSkillsBrowser(fetchPassword.value, (msg) => {
         fetchStatus.value = msg
       }, fetchGithubToken.value)

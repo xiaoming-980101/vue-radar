@@ -1,14 +1,7 @@
-let trendingData = { updatedAt: new Date().toISOString(), projects: [] }
-
-try {
-  trendingData = await import('./github-trending.json', { with: { type: 'json' } })
-} catch (e) {
-  console.warn('[GitHub Trending] 加载数据失败:', e.message)
-}
+import trendingData from './github-trending.json'
 
 export function getGithubStarProjects() {
-  const raw = trendingData.default || trendingData
-  const data = raw.projects || []
+  const data = trendingData.projects || []
 
   return data.map((project, index) => ({
     id: `stars-${index + 1}`,
@@ -37,6 +30,5 @@ export function getGithubStarProjects() {
 }
 
 export function getTrendingUpdatedAt() {
-  const raw = trendingData.default || trendingData
-  return raw.updatedAt ? new Date(raw.updatedAt) : new Date()
+  return trendingData.updatedAt ? new Date(trendingData.updatedAt) : new Date()
 }
