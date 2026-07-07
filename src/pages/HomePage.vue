@@ -11,10 +11,13 @@ import {
 import { githubStarProjects as defaultStarProjects, githubTrendingUpdatedAt as defaultUpdatedAt } from '../data/index.js'
 import staticSkillsData from '../data/skills.json'
 import { fetchAllBrowser, fetchSkillsBrowser, fetchTrendingBrowser, loadTrendingFromStorage } from '../utils/browser-crawler.js'
+import { usePersistentIdList } from '../composables/usePersistentIdList.js'
 
 const starProjects = ref(defaultStarProjects)
 const starUpdatedAt = ref(defaultUpdatedAt)
 const fetchedSkills = ref(staticSkillsData.skills ?? [])
+const shortlist = usePersistentIdList('radar-shortlist-v1')
+const compareList = usePersistentIdList('radar-compare-v1', { max: 2 })
 
 onMounted(() => {
   const cached = loadTrendingFromStorage()
@@ -33,8 +36,14 @@ onMounted(() => {
 const state = ref({ track: 'all', metric: 'wow', query: '' })
 const starterState = ref({ time: 'weekend', goal: 'fun', skill: 'beginner', hardware: 'none' })
 const activePlanId = ref(null)
+const activeDetailId = ref(null)
+const showShortlistPanel = ref(false)
+const showComparePanel = ref(false)
+const copyStatus = ref('')
+const workspaceNotice = ref('')
 const searchInput = ref(null)
 let stopRadar = null
+let copyStatusTimer = null
 
 const showFetchDialog = ref(false)
 const fetchPassword = ref('')
@@ -103,6 +112,13 @@ const visibleProjects = computed(() => {
 })
 
 const activeTheme = computed(() => boardThemes[state.value.track] ?? boardThemes.all)
+const savedProjects = computed(() => shortlist.ids.value.map(projectById).filter(Boolean))
+const compareProjects = computed(() => compareList.ids.value.map(projectById).filter(Boolean))
+const activeDetailProject = computed(() => activeDetailId.value ? projectById(activeDetailId.value) : null)
+const hasSavedProjects = computed(() => savedProjects.value.length > 0)
+const canCompareMore = computed(() => compareList.ids.value.length < 2)
+const shortlistCount = computed(() => savedProjects.value.length)
+const compareCount = computed(() => compareProjects.value.length)
 
 function matchesQuery(project) {
   const haystack = [
@@ -331,18 +347,23 @@ function starterReason(project) {
   const track = trackById(project.track)
   const timeText = starterLabels.time[starterState.value.time]
   const goalText = starterLabels.goal[starterState.value.goal]
-  if (project.track === 'stars') return `适合想"${goalText}"的新手：本次快照新增 +${formatCount(project.weeklyStars)} stars，先复刻一个最小使用场景就能摸到前沿脉搏。`
+  if (project.track === 'stars') return `适合想"${goalText}"的新手：${projectGrowthLabel(project)}，先复刻一个最小使用场景就能摸到前沿脉搏。`
   if (project.track === 'hardware') return `适合"${timeText}"动手：反馈来自真实设备，按 MVP 做出一个可见/可测的小结果。`
   return `适合"${timeText}"开工：${track.short}方向匹配"${goalText}"，先把 MVP 做成可演示版本。`
 }
 
-function syncUrlState() {
+function buildShareUrl(projectId = activeDetailId.value) {
   const params = new URLSearchParams()
   if (state.value.track !== 'all') params.set('track', state.value.track)
   if (state.value.metric !== 'wow') params.set('metric', state.value.metric)
   if (state.value.query.trim()) params.set('q', state.value.query.trim())
+  if (projectId) params.set('project', projectId)
   const query = params.toString()
-  const nextUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname
+  return query ? `${window.location.origin}${window.location.pathname}?${query}` : `${window.location.origin}${window.location.pathname}`
+}
+
+function syncUrlState(projectId = activeDetailId.value) {
+  const nextUrl = buildShareUrl(projectId).replace(window.location.origin, '')
   window.history.replaceState(null, '', nextUrl)
 }
 
@@ -351,9 +372,11 @@ function hydrateStateFromUrl() {
   const track = params.get('track')
   const metric = params.get('metric')
   const query = params.get('q')
+  const projectId = params.get('project')
   if (track === 'all' || boardTabs.some(item => item.id === track)) state.value.track = track
   if (['wow', 'useful', 'easy'].includes(metric)) state.value.metric = metric
   if (query) state.value.query = query
+  if (projectId && projectById(projectId)) activeDetailId.value = projectId
 }
 
 function escapeHtml(value) {
@@ -362,6 +385,72 @@ function escapeHtml(value) {
 
 function openPlan(projectId) { activePlanId.value = projectId }
 function closePlan() { activePlanId.value = null }
+function openPlanFromDetail(projectId) {
+  activeDetailId.value = null
+  syncUrlState(null)
+  openPlan(projectId)
+}
+
+function openDetail(projectId) {
+  if (!projectById(projectId)) return
+  activeDetailId.value = projectId
+  showShortlistPanel.value = false
+  showComparePanel.value = false
+  syncUrlState(projectId)
+}
+
+function closeDetail() {
+  activeDetailId.value = null
+  syncUrlState(null)
+}
+
+function handleProjectCardClick(event, projectId) {
+  if (event.target.closest('a, button, input, label, select, textarea')) return
+  openDetail(projectId)
+}
+
+function handleProjectCardKeydown(event, projectId) {
+  if (event.target.closest('a, button, input, label, select, textarea')) return
+  if (event.key !== 'Enter' && event.key !== ' ') return
+  event.preventDefault()
+  openDetail(projectId)
+}
+
+function toggleShortlistProject(projectId) {
+  shortlist.toggle(projectId)
+  workspaceNotice.value = shortlist.has(projectId) ? '已加入我的开工清单' : '已从开工清单移除'
+  window.setTimeout(() => {
+    if (workspaceNotice.value) workspaceNotice.value = ''
+  }, 1800)
+}
+
+function toggleCompareProject(projectId) {
+  if (compareList.has(projectId)) {
+    compareList.remove(projectId)
+    return
+  }
+  if (!canCompareMore.value) {
+    workspaceNotice.value = '对比最多选择 2 个项目'
+    showComparePanel.value = true
+    window.setTimeout(() => {
+      if (workspaceNotice.value) workspaceNotice.value = ''
+    }, 1800)
+    return
+  }
+  compareList.add(projectId)
+  showComparePanel.value = true
+  showShortlistPanel.value = false
+}
+
+function toggleShortlistPanel() {
+  showShortlistPanel.value = !showShortlistPanel.value
+  if (showShortlistPanel.value) showComparePanel.value = false
+}
+
+function toggleComparePanel() {
+  showComparePanel.value = !showComparePanel.value
+  if (showComparePanel.value) showShortlistPanel.value = false
+}
 
 const activePlanProject = computed(() => activePlanId.value ? projectById(activePlanId.value) : null)
 
@@ -481,21 +570,104 @@ function downloadSkillBundle(project) {
   window.setTimeout(() => { URL.revokeObjectURL(url); link.remove() }, 0)
 }
 
-async function copyPlanPrompt(event) {
-  const plan = buildStarterPlan(activePlanProject.value)
-  const prompt = plan.codexPrompt
-  event.currentTarget.textContent = '已复制'
-  try { await navigator.clipboard.writeText(prompt) } catch {
-    const fallback = document.createElement('textarea')
-    fallback.value = prompt
-    fallback.style.position = 'fixed'
-    fallback.style.opacity = '0'
-    document.body.append(fallback)
-    fallback.select()
-    document.execCommand('copy')
-    fallback.remove()
+function fallbackCopyText(text) {
+  const fallback = document.createElement('textarea')
+  fallback.value = text
+  fallback.style.position = 'fixed'
+  fallback.style.opacity = '0'
+  document.body.append(fallback)
+  fallback.select()
+  document.execCommand('copy')
+  fallback.remove()
+}
+
+async function copyText(text, statusKey) {
+  try {
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text)
+    else fallbackCopyText(text)
+  } catch {
+    fallbackCopyText(text)
   }
-  window.setTimeout(() => { event.currentTarget.textContent = '复制 Prompt' }, 1600)
+  copyStatus.value = statusKey
+  if (copyStatusTimer) clearTimeout(copyStatusTimer)
+  copyStatusTimer = window.setTimeout(() => {
+    if (copyStatus.value === statusKey) copyStatus.value = ''
+  }, 1600)
+}
+
+function copyPlanPrompt() {
+  if (!activePlanProject.value) return
+  copyText(buildStarterPlan(activePlanProject.value).codexPrompt, 'plan-prompt')
+}
+
+function copyProjectPrompt(project, statusKey = `project-prompt-${project.id}`) {
+  copyText(buildStarterPlan(project).codexPrompt, statusKey)
+}
+
+function copyProjectLink(project) {
+  copyText(buildShareUrl(project.id), `project-link-${project.id}`)
+}
+
+function copyCurrentFilterLink() {
+  copyText(buildShareUrl(null), 'filter-link')
+}
+
+function shortlistMarkdown() {
+  const lines = [
+    '# Vibe Coding 开工清单',
+    '',
+    `导出时间：${new Date().toLocaleString('zh-CN')}`,
+    `项目数量：${savedProjects.value.length}`,
+    '',
+  ]
+
+  savedProjects.value.forEach((project, index) => {
+    const plan = buildStarterPlan(project)
+    lines.push(
+      `## ${index + 1}. ${project.name}`,
+      '',
+      `方向：${trackById(project.track).title}`,
+      `项目链接：${plan.sourceUrl}`,
+      plan.demoUrl ? `演示入口：${plan.demoUrl}` : '',
+      `预计用时：${plan.estimate}`,
+      `判断：${plan.verdict.label}，${plan.scale.label}`,
+      `MVP：${project.mvp}`,
+      '',
+      '### 开工前检查',
+      `- 准备：${plan.prepItems.join('、')}`,
+      `- 风险：${plan.risks.join('；')}`,
+      '',
+      '### 推荐 Skill',
+      ...plan.skills.map((skill) => `- [${skill.name}](${skill.url})：${skillUseReason(project, skill)}`),
+      '',
+      '### Codex Prompt',
+      '```text',
+      plan.codexPrompt,
+      '```',
+      '',
+    )
+  })
+
+  return lines.filter((line) => line !== '').join('\n')
+}
+
+function downloadShortlistMarkdown() {
+  if (!hasSavedProjects.value) return
+  const markdown = shortlistMarkdown()
+  const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'vibe-coding-shortlist.md'
+  document.body.append(link)
+  link.click()
+  window.setTimeout(() => { URL.revokeObjectURL(url); link.remove() }, 0)
+}
+
+function handleGlobalKeydown(event) {
+  if (event.key !== 'Escape') return
+  if (activeDetailProject.value) closeDetail()
+  else if (activePlanProject.value) closePlan()
 }
 
 function setTrack(trackId) {
@@ -581,10 +753,15 @@ function startRadar() {
 
 onMounted(() => {
   hydrateStateFromUrl()
+  window.addEventListener('keydown', handleGlobalKeydown)
   nextTick(() => { stopRadar = startRadar() })
 })
 
-onUnmounted(() => { if (stopRadar) stopRadar() })
+onUnmounted(() => {
+  if (stopRadar) stopRadar()
+  if (copyStatusTimer) clearTimeout(copyStatusTimer)
+  window.removeEventListener('keydown', handleGlobalKeydown)
+})
 </script>
 
 <template>
@@ -731,7 +908,10 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
         </div>
         <div class="starter-results" aria-live="polite">
           <article v-for="({ project, score }, index) in starterRecommendations()" :key="project.id"
-            class="starter-result-card" :style="{ '--track': trackById(project.track).accent }">
+            class="starter-result-card clickable-project-card" tabindex="0"
+            :style="{ '--track': trackById(project.track).accent }"
+            @click="handleProjectCardClick($event, project.id)"
+            @keydown="handleProjectCardKeydown($event, project.id)">
             <div class="starter-result-top">
               <span>#{{ index + 1 }}</span>
               <em>{{ trackById(project.track).title }}</em>
@@ -741,6 +921,17 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
             <p>{{ starterReason(project) }}</p>
             <div class="feature-list">
               <span v-for="tag in projectExperienceTags(project, 3)" :key="tag">{{ tag }}</span>
+            </div>
+            <div class="project-card-toolbar" aria-label="项目操作">
+              <button type="button" @click="openDetail(project.id)">详情</button>
+              <button type="button" :class="{ active: shortlist.has(project.id) }" @click="toggleShortlistProject(project.id)">
+                {{ shortlist.has(project.id) ? '已收藏' : '收藏' }}
+              </button>
+              <button type="button" :class="{ active: compareList.has(project.id) }"
+                :disabled="!compareList.has(project.id) && !canCompareMore"
+                @click="toggleCompareProject(project.id)">
+                {{ compareList.has(project.id) ? '已选对比' : '对比' }}
+              </button>
             </div>
             <div class="starter-result-actions">
               <button type="button" class="plan-button action-tile" @click="openPlan(project.id)">
@@ -818,7 +1009,10 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
             <div class="project-column-list">
               <template v-if="projectsForTrack(track.id).length">
                 <article v-for="(project, idx) in projectsForTrack(track.id)" :key="project.id"
-                  class="project-card project-card-compact" :style="{ '--track': trackById(project.track).accent }">
+                  class="project-card project-card-compact clickable-project-card" tabindex="0"
+                  :style="{ '--track': trackById(project.track).accent }"
+                  @click="handleProjectCardClick($event, project.id)"
+                  @keydown="handleProjectCardKeydown($event, project.id)">
                   <div class="card-topline">
                     <span class="rank">#{{ project.rank }}</span>
                     <span class="track-label">{{ trackById(project.track).title }}</span>
@@ -835,6 +1029,17 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
                         <strong>{{ skill.name }}</strong><em>{{ skill.signal }}</em>
                       </a>
                     </div>
+                  </div>
+                  <div class="project-card-toolbar" aria-label="项目操作">
+                    <button type="button" @click="openDetail(project.id)">详情</button>
+                    <button type="button" :class="{ active: shortlist.has(project.id) }" @click="toggleShortlistProject(project.id)">
+                      {{ shortlist.has(project.id) ? '已收藏' : '收藏' }}
+                    </button>
+                    <button type="button" :class="{ active: compareList.has(project.id) }"
+                      :disabled="!compareList.has(project.id) && !canCompareMore"
+                      @click="toggleCompareProject(project.id)">
+                      {{ compareList.has(project.id) ? '已对比' : '对比' }}
+                    </button>
                   </div>
                   <footer class="card-footer">
                     <div class="card-stat"><span>Skills</span><strong>{{ recommendedSkills(project, 2).length }} 个</strong></div>
@@ -857,8 +1062,11 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
       <template v-else>
         <div class="project-grid" aria-live="polite">
           <article v-for="(project, index) in visibleProjects" :key="project.id"
-            class="project-card" :class="{ 'project-card-star': project.track === 'stars' }"
-            :style="{ '--track': trackById(project.track).accent }">
+            class="project-card clickable-project-card" :class="{ 'project-card-star': project.track === 'stars' }"
+            tabindex="0"
+            :style="{ '--track': trackById(project.track).accent }"
+            @click="handleProjectCardClick($event, project.id)"
+            @keydown="handleProjectCardKeydown($event, project.id)">
             <div class="card-topline">
               <span class="rank">#{{ index + 1 }}</span>
               <span class="track-label">{{ trackById(project.track).title }}</span>
@@ -875,6 +1083,17 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
                   <strong>{{ skill.name }}</strong><em>{{ skill.signal }}</em>
                 </a>
               </div>
+            </div>
+            <div class="project-card-toolbar" aria-label="项目操作">
+              <button type="button" @click="openDetail(project.id)">详情</button>
+              <button type="button" :class="{ active: shortlist.has(project.id) }" @click="toggleShortlistProject(project.id)">
+                {{ shortlist.has(project.id) ? '已收藏' : '收藏' }}
+              </button>
+              <button type="button" :class="{ active: compareList.has(project.id) }"
+                :disabled="!compareList.has(project.id) && !canCompareMore"
+                @click="toggleCompareProject(project.id)">
+                {{ compareList.has(project.id) ? '已选对比' : '加入对比' }}
+              </button>
             </div>
             <footer class="card-footer">
               <div class="card-stat">
@@ -972,6 +1191,208 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
       </div>
     </section>
 
+    <div v-if="!activeDetailProject && !activePlanProject"
+      class="workspace-dock" :class="{ 'is-open': showShortlistPanel || showComparePanel }" aria-label="我的项目工作台">
+      <div class="workspace-dock-actions">
+        <button type="button" :class="{ active: showShortlistPanel }" @click="toggleShortlistPanel">
+          <span>我的开工清单</span><strong>{{ shortlistCount }}</strong>
+        </button>
+        <button type="button" :class="{ active: showComparePanel }" @click="toggleComparePanel">
+          <span>项目对比</span><strong>{{ compareCount }}/2</strong>
+        </button>
+        <button type="button" @click="copyCurrentFilterLink">
+          <span>{{ copyStatus === 'filter-link' ? '已复制' : '分享筛选' }}</span><strong>URL</strong>
+        </button>
+      </div>
+      <p v-if="workspaceNotice" class="workspace-notice">{{ workspaceNotice }}</p>
+
+      <section v-if="showShortlistPanel" class="workspace-panel shortlist-panel" aria-label="我的开工清单">
+        <header>
+          <div>
+            <span>Shortlist</span>
+            <strong>我的开工清单</strong>
+          </div>
+          <div class="workspace-panel-actions">
+            <button type="button" :disabled="!hasSavedProjects" @click="downloadShortlistMarkdown">导出 Markdown</button>
+            <button type="button" :disabled="!hasSavedProjects" @click="shortlist.clear()">清空</button>
+          </div>
+        </header>
+        <div v-if="hasSavedProjects" class="shortlist-list">
+          <article v-for="project in savedProjects" :key="project.id" :style="{ '--track': trackById(project.track).accent }">
+            <span>{{ trackById(project.track).title }}</span>
+            <strong>{{ project.name }}</strong>
+            <p>{{ project.mvp }}</p>
+            <div>
+              <button type="button" @click="openDetail(project.id)">详情</button>
+              <button type="button" @click="openPlan(project.id)">开工计划</button>
+              <button type="button" @click="shortlist.remove(project.id)">移除</button>
+            </div>
+          </article>
+        </div>
+        <div v-else class="workspace-empty">
+          <strong>还没有收藏项目</strong>
+          <p>在项目卡片点“收藏”，这里就会变成你的开工队列。</p>
+        </div>
+      </section>
+
+      <section v-if="showComparePanel" class="workspace-panel compare-panel" aria-label="项目对比">
+        <header>
+          <div>
+            <span>Compare</span>
+            <strong>双项目对比</strong>
+          </div>
+          <div class="workspace-panel-actions">
+            <button type="button" :disabled="compareCount === 0" @click="compareList.clear()">清空</button>
+          </div>
+        </header>
+        <div v-if="compareCount === 0" class="workspace-empty">
+          <strong>先选两个项目</strong>
+          <p>在项目卡片点“对比”，最多选择 2 个，适合快速判断哪个更值得开工。</p>
+        </div>
+        <div v-else class="compare-grid">
+          <article v-for="project in compareProjects" :key="project.id" :style="{ '--track': trackById(project.track).accent }">
+            <div class="compare-card-head">
+              <span>{{ trackById(project.track).title }}</span>
+              <button type="button" @click="compareList.remove(project.id)">移除</button>
+            </div>
+            <h3>{{ project.name }}</h3>
+            <p>{{ project.tagline }}</p>
+            <dl>
+              <div><dt>评分</dt><dd>Wow {{ project.wow }} / Useful {{ project.useful }} / Easy {{ project.easy }}</dd></div>
+              <div><dt>难度</dt><dd>{{ buildStarterPlan(project).scale.label }} · Scale {{ buildStarterPlan(project).scale.value }}/5</dd></div>
+              <div><dt>成本</dt><dd>{{ buildStarterPlan(project).estimate }} · {{ buildStarterPlan(project).prepItems.join('、') }}</dd></div>
+              <div><dt>MVP</dt><dd>{{ project.mvp }}</dd></div>
+              <div><dt>风险</dt><dd>{{ buildStarterPlan(project).risks.join('；') }}</dd></div>
+              <div><dt>Skill</dt><dd>{{ buildStarterPlan(project).skills.map(skill => skill.name).join('、') }}</dd></div>
+            </dl>
+            <div class="compare-card-actions">
+              <button type="button" @click="openDetail(project.id)">详情</button>
+              <button type="button" @click="openPlan(project.id)">开工计划</button>
+              <a :href="projectPrimaryUrl(project)" target="_blank" rel="noreferrer">{{ projectPrimaryActionLabel(project) }}</a>
+            </div>
+          </article>
+          <div v-if="compareCount === 1" class="compare-placeholder">
+            再选择 1 个项目，就能并排比较难度、风险和开工成本。
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div v-if="activeDetailProject" class="project-detail-shell">
+      <div class="project-detail-backdrop" @click="closeDetail"></div>
+      <aside class="project-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="projectDetailTitle"
+        :style="{ '--track': trackById(activeDetailProject.track).accent }">
+        <header class="project-detail-head">
+          <div>
+            <p class="section-kicker">Project Detail</p>
+            <h2 id="projectDetailTitle">{{ activeDetailProject.name }}</h2>
+            <p>{{ activeDetailProject.tagline }}</p>
+          </div>
+          <button type="button" class="plan-close" @click="closeDetail" aria-label="关闭项目详情">×</button>
+        </header>
+
+        <div class="project-detail-actions">
+          <button type="button" class="plan-button" @click="openPlanFromDetail(activeDetailProject.id)">生成开工计划</button>
+          <button type="button" class="source-link" :class="{ active: shortlist.has(activeDetailProject.id) }"
+            @click="toggleShortlistProject(activeDetailProject.id)">
+            {{ shortlist.has(activeDetailProject.id) ? '已在清单' : '加入清单' }}
+          </button>
+          <button type="button" class="source-link" :class="{ active: compareList.has(activeDetailProject.id) }"
+            :disabled="!compareList.has(activeDetailProject.id) && !canCompareMore"
+            @click="toggleCompareProject(activeDetailProject.id)">
+            {{ compareList.has(activeDetailProject.id) ? '已选对比' : '加入对比' }}
+          </button>
+          <button type="button" class="source-link" @click="copyProjectLink(activeDetailProject)">
+            {{ copyStatus === `project-link-${activeDetailProject.id}` ? '已复制链接' : '复制链接' }}
+          </button>
+        </div>
+
+        <div class="project-detail-meta">
+          <span>{{ trackById(activeDetailProject.track).title }}</span>
+          <span>预计 {{ buildStarterPlan(activeDetailProject).estimate }}</span>
+          <span>{{ buildStarterPlan(activeDetailProject).verdict.label }}</span>
+          <span>{{ buildStarterPlan(activeDetailProject).scale.label }}</span>
+          <span v-for="tag in projectExperienceTags(activeDetailProject, 4)" :key="tag">{{ tag }}</span>
+        </div>
+
+        <div class="project-detail-grid">
+          <section class="detail-verdict-card" :class="`plan-verdict-${buildStarterPlan(activeDetailProject).verdict.tone}`">
+            <span>适合谁</span>
+            <strong>{{ buildStarterPlan(activeDetailProject).verdict.label }}</strong>
+            <p>{{ starterReason(activeDetailProject) }}</p>
+            <p>{{ buildStarterPlan(activeDetailProject).verdict.reason }}</p>
+          </section>
+          <section class="detail-score-card">
+            <span>三维评分</span>
+            <div><em>Wow</em><strong>{{ activeDetailProject.wow }}</strong></div>
+            <div><em>Useful</em><strong>{{ activeDetailProject.useful }}</strong></div>
+            <div><em>Easy</em><strong>{{ activeDetailProject.easy }}</strong></div>
+          </section>
+          <section class="detail-stack-card">
+            <span>技术栈 / 素材</span>
+            <div>
+              <em v-for="item in projectStack(activeDetailProject)" :key="item">{{ item }}</em>
+            </div>
+          </section>
+        </div>
+
+        <div class="project-detail-grid project-detail-grid-wide">
+          <section class="plan-block">
+            <h3>MVP</h3>
+            <p>{{ activeDetailProject.mvp }}</p>
+          </section>
+          <section class="plan-block">
+            <h3>开工前准备</h3>
+            <div class="plan-prep-list">
+              <em v-for="item in buildStarterPlan(activeDetailProject).prepItems" :key="item">{{ item }}</em>
+            </div>
+          </section>
+          <section class="plan-block">
+            <h3>可能卡点</h3>
+            <ul class="plan-list">
+              <li v-for="risk in buildStarterPlan(activeDetailProject).risks" :key="risk">{{ risk }}</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="plan-block detail-skill-block">
+          <div class="plan-block-head">
+            <h3>推荐 Skill</h3>
+            <div class="plan-head-actions">
+              <a class="skill-radar-button" :href="skillRadarUrl">完整榜单</a>
+              <button type="button" class="download-skills" @click="downloadSkillBundle(activeDetailProject)">下载清单</button>
+            </div>
+          </div>
+          <div class="plan-skill-list">
+            <a v-for="skill in buildStarterPlan(activeDetailProject).skills" :key="skill.id"
+              :href="skill.url" target="_blank" rel="noreferrer">
+              <strong>{{ skill.name }}</strong>
+              <span>{{ skillUseReason(activeDetailProject, skill) }}</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="plan-block plan-prompt-block detail-prompt-block">
+          <div class="plan-block-head">
+            <h3>复制给 Codex 的 Prompt</h3>
+            <button type="button" class="copy-plan" @click="copyProjectPrompt(activeDetailProject)">
+              {{ copyStatus === `project-prompt-${activeDetailProject.id}` ? '已复制' : '复制 Prompt' }}
+            </button>
+          </div>
+          <pre>{{ buildStarterPlan(activeDetailProject).codexPrompt }}</pre>
+        </section>
+
+        <footer class="project-detail-foot">
+          <a class="plan-source-card" :href="buildStarterPlan(activeDetailProject).primaryUrl" target="_blank" rel="noreferrer">
+            <span>{{ buildStarterPlan(activeDetailProject).demoUrl ? '演示入口' : '项目来源' }}</span>
+            <strong>{{ buildStarterPlan(activeDetailProject).sourceName }}</strong>
+            <em>{{ buildStarterPlan(activeDetailProject).primaryUrl }}</em>
+          </a>
+          <button type="button" class="plan-button" @click="openPlanFromDetail(activeDetailProject.id)">继续生成开工计划</button>
+        </footer>
+      </aside>
+    </div>
+
     <div v-if="activePlanProject" class="plan-dialog-shell">
       <div class="plan-backdrop" @click="closePlan"></div>
       <section class="plan-dialog" role="dialog" aria-modal="true" tabindex="-1"
@@ -983,7 +1404,9 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
             <p>{{ escapeHtml(activePlanProject.tagline) }}</p>
           </div>
           <div class="plan-dialog-controls">
-            <button type="button" class="copy-plan plan-copy-top" @click="copyPlanPrompt">复制 Prompt</button>
+            <button type="button" class="copy-plan plan-copy-top" @click="copyPlanPrompt">
+              {{ copyStatus === 'plan-prompt' ? '已复制' : '复制 Prompt' }}
+            </button>
             <a class="plan-header-source" :href="buildStarterPlan(activePlanProject).primaryUrl" target="_blank" rel="noreferrer">
               {{ buildStarterPlan(activePlanProject).demoUrl ? '打开演示入口' : '打开项目来源' }}
             </a>
@@ -1081,7 +1504,9 @@ onUnmounted(() => { if (stopRadar) stopRadar() })
           <section class="plan-block plan-prompt-block">
             <div class="plan-block-head">
               <h3>复制给 Codex（含 GitHub / 项目链接）</h3>
-              <button type="button" class="copy-plan" @click="copyPlanPrompt">复制 Prompt</button>
+              <button type="button" class="copy-plan" @click="copyPlanPrompt">
+                {{ copyStatus === 'plan-prompt' ? '已复制' : '复制 Prompt' }}
+              </button>
             </div>
             <pre id="planPrompt">{{ escapeHtml(buildStarterPlan(activePlanProject).codexPrompt) }}</pre>
           </section>

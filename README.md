@@ -8,6 +8,7 @@
 - **GitHub 明星项目**：自动爬取 GitHub 热门项目，按 stars 排序
 - **新手选择器**：根据时间、目标、熟练度和硬件意愿，推荐最适合的项目
 - **开工计划**：为每个项目生成开工步骤、文件结构和 Codex Prompt
+- **项目工作台**：支持项目详情深链、本地收藏、双项目对比、筛选分享和 Markdown 开工清单导出
 - **必装 Skill**：推荐每个项目适合使用的 AI Skill 和 CLI 工具
 - **Codex 趣味用法**：整理可复制的 Codex 使用场景，覆盖电脑整理、网页流程、小游戏原型和代码审查
 
@@ -16,23 +17,28 @@
 ```
 vue-radar/
 ├── public/                    # 静态资源
-│   ├── skills.html           # 必装 Skill 页面
-│   ├── skills.css            # Skill 页面样式
-│   ├── codex-uses.html       # Codex 趣味用法页面
-│   ├── codex-uses.css        # Codex 用法页面样式
 │   ├── css2.css              # 字体样式
 │   └── script.js             # 统计脚本
 ├── src/
-│   ├── App.vue               # 主组件
+│   ├── App.vue               # 多页面路径分发
 │   ├── main.js               # 入口文件
 │   ├── style.css             # 全局样式
+│   ├── pages/                # Vue 页面
+│   │   ├── HomePage.vue      # 首页雷达、详情、收藏、对比
+│   │   ├── SkillsPage.vue    # 必装 Skill 页面
+│   │   └── CodexUsesPage.vue # Codex 趣味用法页面
+│   ├── composables/          # 可复用状态逻辑
+│   │   └── usePersistentIdList.js
 │   ├── assets/               # 资源文件
 │   │   ├── styles.css        # 主样式
+│   │   ├── skills-page.css   # Skill 页面样式
+│   │   ├── codex-uses-page.css # Codex 用法页面样式
 │   │   ├── theme.css         # 主题变量
 │   │   └── css2.css          # 字体样式
-│   ├── components/           # 组件目录
 │   ├── data/                 # 数据文件
 │   │   ├── index.js          # 主数据（90个项目）
+│   │   ├── skill-page.js     # Skill 页人工策划数据
+│   │   ├── codex-uses.js     # Codex 用法案例数据
 │   │   ├── github-trending.json  # GitHub 爬取数据
 │   │   ├── tagline-zh.json   # 中文翻译映射
 │   │   └── trending-loader.js    # 数据加载器
@@ -47,6 +53,8 @@ vue-radar/
 │       ├── update-trending.yml  # GitHub Actions 自动更新数据
 │       └── deploy-jd.yml        # GitHub Actions 自动部署京东云
 ├── index.html                # HTML 入口
+├── skills.html               # 必装 Skill Vue 页面入口
+├── codex-uses.html           # Codex 用法 Vue 页面入口
 ├── vite.config.js            # Vite 配置
 └── package.json              # 依赖配置
 ```
@@ -84,7 +92,7 @@ npm run build
 - `src/data/github-trending.json`
 - `src/data/skills.json`
 
-`public/codex-uses.html` 属于人工整理的专题页，不会被自动覆盖。
+`src/data/skill-page.js` 和 `src/data/codex-uses.js` 属于人工整理的专题页数据，不会被自动覆盖。
 
 ### 手动更新
 
