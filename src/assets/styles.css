@@ -1,4 +1,4 @@
-@import "theme.css";
+﻿@import "theme.css";
 
 * {
   box-sizing: border-box;
@@ -218,6 +218,29 @@ h2 {
   font-size: clamp(1.05rem, 2vw, 1.25rem);
   line-height: 1.8;
   overflow-wrap: anywhere;
+}
+
+.update-schedule {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.update-schedule span,
+.update-schedule strong {
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1;
+  padding: 9px 10px;
+}
+
+.update-schedule span {
+  background: var(--acid);
 }
 
 .hero-actions {
@@ -1408,13 +1431,15 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 38px;
-  height: 30px;
+  min-width: 64px;
+  min-height: 32px;
   border: 1px solid var(--ink);
   background: var(--acid);
-  padding: 0 8px;
+  padding: 0 10px;
   font-size: 0.72rem;
   font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .project-card h3 {
@@ -1607,6 +1632,10 @@ a:focus-visible {
   font-weight: 900;
 }
 
+.project-card-star .grade {
+  min-width: 54px;
+}
+
 .project-card-star .mvp {
   background:
     linear-gradient(90deg, rgba(217, 248, 93, 0.22), transparent),
@@ -1677,12 +1706,8 @@ a:focus-visible {
 
 .plan-dialog > *,
 .plan-overview,
-.plan-diagnosis,
 .plan-grid,
 .plan-block,
-.plan-verdict-card,
-.plan-scale-card,
-.plan-prep-card,
 .plan-prompt-block,
 .plan-source-card,
 .plan-skill-list,
@@ -1711,11 +1736,35 @@ a:focus-visible {
   line-height: 1.7;
 }
 
-.plan-dialog-controls {
-  display: grid;
-  grid-template-columns: minmax(112px, auto) minmax(136px, auto) 40px;
-  gap: 8px;
-  align-items: start;
+.plan-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.plan-dialog-actions .copy-plan,
+.plan-header-source {
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+.plan-header-source {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ink);
+  background: white;
+  color: var(--ink);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.plan-header-source:hover,
+.plan-header-source:focus-visible {
+  background: var(--acid);
+  outline: 2px solid rgba(17, 24, 39, 0.16);
+  outline-offset: 2px;
 }
 
 .plan-close {
@@ -1724,31 +1773,108 @@ a:focus-visible {
   font-size: 1.3rem;
 }
 
-.plan-copy-top,
-.plan-header-source {
-  min-height: 40px;
-  white-space: nowrap;
+.plan-diagnosis {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr) minmax(240px, 0.78fr);
+  gap: 14px;
 }
 
-.plan-header-source {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--ink);
-  background: var(--acid);
-  color: var(--ink);
-  font-size: 0.84rem;
+.plan-verdict-card,
+.plan-scale-card,
+.plan-prep-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: white;
+  padding: 16px;
+}
+
+.plan-verdict-card {
+  border-color: var(--ink);
+  background:
+    linear-gradient(150deg, color-mix(in srgb, var(--track) 16%, transparent), transparent 58%),
+    white;
+  box-shadow: 6px 6px 0 color-mix(in srgb, var(--track) 18%, transparent);
+}
+
+.plan-verdict-card span,
+.plan-scale-card span,
+.plan-prep-card > span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.74rem;
   font-weight: 900;
-  padding: 0 12px;
-  text-decoration: none;
+  text-transform: uppercase;
 }
 
-.plan-header-source:hover,
-.plan-header-source:focus-visible {
-  background: var(--ink);
-  color: white;
-  outline: 2px solid color-mix(in srgb, var(--track) 24%, transparent);
-  outline-offset: 2px;
+.plan-verdict-card strong,
+.plan-scale-card strong {
+  display: block;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 2.5vw, 2.35rem);
+  line-height: 1;
+}
+
+.plan-verdict-card p,
+.plan-scale-card p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.66;
+}
+
+.plan-verdict-good {
+  --verdict: #18a058;
+}
+
+.plan-verdict-ok {
+  --verdict: #225cff;
+}
+
+.plan-verdict-warn {
+  --verdict: #ff6a3d;
+}
+
+.plan-verdict-card strong {
+  color: var(--verdict, var(--track));
+}
+
+.plan-scale-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.plan-scale-meter {
+  height: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 18%, rgba(17, 24, 39, 0.08) 18% 19%, transparent 19% 20%),
+    var(--paper);
+}
+
+.plan-scale-meter i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--acid), var(--track));
+}
+
+.plan-prep-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.plan-prep-list em {
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 900;
+  padding: 7px 9px;
 }
 
 .plan-overview {
@@ -1821,118 +1947,14 @@ a:focus-visible {
   color: white;
 }
 
-.plan-diagnosis {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.05fr) minmax(0, 1fr);
-  gap: 14px;
-}
-
-.plan-verdict-card,
-.plan-scale-card,
-.plan-prep-card {
-  border: 1px solid var(--line);
-  background: var(--paper);
-  padding: 16px;
-}
-
-.plan-verdict-card {
-  border-color: var(--ink);
-  background: white;
-}
-
-.plan-verdict-card span,
-.plan-scale-card span,
-.plan-prep-card span {
-  color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.plan-verdict-card strong,
-.plan-scale-card strong {
-  display: block;
-  margin-top: 7px;
-  font-size: 1.25rem;
-  line-height: 1.18;
-}
-
-.plan-verdict-card p,
-.plan-scale-card p {
-  margin: 10px 0 0;
-  color: var(--muted);
-  font-weight: 750;
-  line-height: 1.62;
-}
-
-.plan-verdict-good {
-  box-shadow: inset 5px 0 0 #18a058;
-}
-
-.plan-verdict-ok {
-  box-shadow: inset 5px 0 0 var(--track);
-}
-
-.plan-verdict-warn {
-  box-shadow: inset 5px 0 0 #f59e0b;
-}
-
-.plan-scale-card {
-  display: grid;
-  gap: 10px;
-}
-
-.plan-scale-card > div:first-child {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.plan-scale-card > div:first-child strong {
-  margin: 0;
-  white-space: nowrap;
-}
-
-.plan-scale-meter {
-  height: 10px;
-  overflow: hidden;
-  border: 1px solid var(--ink);
-  background: white;
-}
-
-.plan-scale-meter i {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, #18a058, var(--acid), #ff6a3d);
-}
-
-.plan-prep-card {
-  display: grid;
-  align-content: start;
-  gap: 12px;
-}
-
-.plan-prep-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.plan-prep-list em {
-  border: 1px solid var(--line);
-  background: white;
-  color: var(--ink);
-  font-size: 0.8rem;
-  font-style: normal;
-  font-weight: 850;
-  padding: 6px 8px;
-}
-
 .plan-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
+}
+
+.plan-grid-simple {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(240px, 0.74fr);
 }
 
 .plan-block {
@@ -1942,21 +1964,6 @@ a:focus-visible {
     linear-gradient(180deg, color-mix(in srgb, var(--track) 8%, transparent), transparent 72%),
     var(--paper);
   padding: 16px;
-}
-
-.plan-demo-block {
-  border-color: var(--ink);
-  background: white;
-}
-
-.plan-risk-block {
-  background:
-    linear-gradient(180deg, rgba(245, 158, 11, 0.12), transparent 74%),
-    var(--paper);
-}
-
-.plan-demo-link-card {
-  min-height: 100%;
 }
 
 .plan-block h3 {
@@ -1984,7 +1991,51 @@ a:focus-visible {
 }
 
 .plan-skill-block {
-  grid-column: span 2;
+  grid-column: 1 / -1;
+}
+
+details.plan-skill-block {
+  display: block;
+  padding: 0;
+}
+
+.plan-skill-block summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  padding: 16px;
+}
+
+.plan-skill-block summary::-webkit-details-marker {
+  display: none;
+}
+
+.plan-skill-block summary span {
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.plan-skill-block summary em {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.plan-skill-block[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.plan-skill-block[open] p,
+.plan-skill-block[open] .plan-skill-list,
+.plan-skill-block[open] .skill-radar-button {
+  margin-inline: 16px;
+}
+
+.plan-skill-block[open] .skill-radar-button {
+  margin-bottom: 16px;
 }
 
 .plan-skill-list {
@@ -2084,6 +2135,7 @@ a:focus-visible {
 
 .plan-prompt-block pre {
   min-height: 148px;
+  max-height: min(320px, 44vh);
   max-width: 100%;
   overflow: auto;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -2126,6 +2178,33 @@ a:focus-visible {
   color: white;
 }
 
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 16px;
+  width: min(1180px, calc(100% - 40px));
+  margin: 52px auto 0;
+  border-top: 1px solid var(--line);
+  padding: 22px 0 34px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.site-footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-footer a:hover,
+.site-footer a:focus-visible {
+  color: var(--ink);
+  text-decoration: underline;
+  outline: none;
+}
+
 .empty-column {
   color: var(--muted);
   font-weight: 800;
@@ -2157,6 +2236,7 @@ a:focus-visible {
   .star-showcase-grid,
   .starter-head,
   .starter-layout,
+  .plan-diagnosis,
   .plan-overview,
   .plan-grid {
     grid-template-columns: 1fr;
@@ -2222,46 +2302,12 @@ a:focus-visible {
     align-items: flex-start;
     flex-direction: column;
     padding-top: 18px;
-    width: 100%;
   }
 
   .topnav,
   .segmented {
     width: 100%;
     overflow-x: auto;
-  }
-
-  .topnav {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: calc(100vw - 24px);
-    min-width: 0;
-    max-width: calc(100vw - 24px);
-    overflow-x: visible;
-  }
-
-  .nav-pill {
-    min-width: 0;
-    width: 100%;
-    min-height: 38px;
-    font-size: 0.86rem;
-    line-height: 1.15;
-    padding: 0 4px;
-    overflow-wrap: anywhere;
-    text-align: center;
-    word-break: break-word;
-    white-space: normal;
-  }
-
-  .hero-copy,
-  .hero-lede {
-    width: calc(100vw - 24px);
-    max-width: calc(100vw - 24px);
-    min-width: 0;
-  }
-
-  .hero-lede {
-    word-break: break-word;
   }
 
   .hero-grid {
@@ -2402,16 +2448,8 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .plan-dialog-controls {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .plan-diagnosis {
-    grid-template-columns: 1fr;
-  }
-
   .plan-skill-block {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
 
   .plan-skill-list a {
@@ -2423,11 +2461,12 @@ a:focus-visible {
   }
 
   .plan-head-actions,
-  .plan-header-source,
-  .plan-copy-top,
+  .plan-dialog-actions,
   .copy-plan,
   .download-skills,
-  .skill-radar-button {
+  .skill-radar-button,
+  .plan-source-card,
+  .plan-header-source {
     width: 100%;
   }
 
