@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-07T01:11:10.173Z",
+  "updatedAt": "2026-07-07T01:49:53.156Z",
   "skills": [
     {
       "id": "skill-1",
@@ -7,7 +7,7 @@
       "name": "Superpowers",
       "tagline": "把软件开发方法论、工作流和 agentic skills 打成一套增强包，适合先给 AI 装上“做事方法”。",
       "url": "https://github.com/obra/superpowers",
-      "totalStars": 0,
+      "totalStars": 247773,
       "category": "skill"
     },
     {
@@ -25,7 +25,7 @@
       "name": "headroom",
       "tagline": "把工具输出、日志、文件和 RAG chunk 先压缩再交给 LLM，适合所有容易被 token 成本拖慢的 agent 工作流。",
       "url": "https://github.com/chopratejas/headroom",
-      "totalStars": 21400,
+      "totalStars": 57171,
       "category": "star-skill"
     },
     {
@@ -34,7 +34,7 @@
       "name": "Anthropic Skills",
       "tagline": "Claude Skill 的官方公开仓库，适合理解 Skill 的标准写法、触发方式和跨工具复用思路。",
       "url": "https://github.com/anthropics/skills",
-      "totalStars": 0,
+      "totalStars": 158845,
       "category": "skill"
     },
     {
@@ -52,7 +52,7 @@
       "name": "hermes-agent",
       "tagline": "会随用户成长的 AI agent，强调长期记忆、工具和自我改进，适合观察 agent 产品形态。",
       "url": "https://github.com/NousResearch/hermes-agent",
-      "totalStars": 189600,
+      "totalStars": 210389,
       "category": "star-skill"
     },
     {
@@ -61,7 +61,7 @@
       "name": "OpenAI Skills Catalog",
       "tagline": "Codex 用户最该先看的官方技能目录，用来理解怎么安装、触发和组合 Skill。",
       "url": "https://github.com/openai/skills",
-      "totalStars": 0,
+      "totalStars": 23314,
       "category": "skill"
     },
     {
@@ -79,7 +79,7 @@
       "name": "last30days-skill",
       "tagline": "让 agent 跨 Reddit、X、YouTube、HN、Polymarket 和网页做近 30 天研究，输出带来源摘要。",
       "url": "https://github.com/mvanhorn/last30days-skill",
-      "totalStars": 38800,
+      "totalStars": 49789,
       "category": "star-skill"
     },
     {
@@ -88,7 +88,7 @@
       "name": "Vercel Agent Skills",
       "tagline": "网页项目做完后最需要预览、部署、检查和上线，Vercel 这一套非常适合新手拿结果。",
       "url": "https://github.com/vercel-labs/agent-skills",
-      "totalStars": 0,
+      "totalStars": 28745,
       "category": "skill"
     },
     {
@@ -106,7 +106,7 @@
       "name": "ECC",
       "tagline": "面向 Claude Code、Codex、Opencode、Cursor 等代理的性能优化系统，适合提升执行质量。",
       "url": "https://github.com/affaan-m/ECC",
-      "totalStars": 212400,
+      "totalStars": 226691,
       "category": "star-skill"
     },
     {
@@ -115,7 +115,7 @@
       "name": "GitHub CLI",
       "tagline": "让 AI 能更顺地 clone、查 issue、看 release、开 PR 和管理项目来源，是复现开源项目的基本手脚。",
       "url": "https://github.com/cli/cli",
-      "totalStars": 0,
+      "totalStars": 45152,
       "category": "skill"
     },
     {
@@ -133,7 +133,7 @@
       "name": "markitdown",
       "tagline": "把 PDF、PPT、Word 等文件转换成 Markdown，适合进入 AI 阅读、知识库和文档整理流程。",
       "url": "https://github.com/microsoft/markitdown",
-      "totalStars": 150000,
+      "totalStars": 163467,
       "category": "star-skill"
     },
     {
@@ -142,7 +142,7 @@
       "name": "OpenCLI",
       "tagline": "把网站、平台和登录态浏览器变成 AI 能调用的 CLI，适合做资料抓取、网页操作和中文工作流。",
       "url": "https://github.com/jackwener/OpenCLI",
-      "totalStars": 0,
+      "totalStars": 26158,
       "category": "skill"
     },
     {
@@ -160,7 +160,7 @@
       "name": "taste-skill",
       "tagline": "给 AI 加一份审美判断，适合改善泛化、模板味、缺少品味的文案和视觉说明。",
       "url": "https://github.com/Leonxlnx/taste-skill",
-      "totalStars": 40300,
+      "totalStars": 58993,
       "category": "star-skill"
     },
     {
@@ -169,7 +169,7 @@
       "name": "Playwright Skill",
       "tagline": "让 AI 真的打开浏览器测试按钮、输入框、响应式和流程，不再只靠“看起来能跑”。",
       "url": "https://github.com/lackeyjb/playwright-skill",
-      "totalStars": 0,
+      "totalStars": 2875,
       "category": "skill"
     },
     {
@@ -187,7 +187,7 @@
       "name": "Agent-Reach",
       "tagline": "给 AI agent 接入 Twitter、Reddit、YouTube、GitHub、小红书等信息源，适合做趋势研究。",
       "url": "https://github.com/Panniantong/Agent-Reach",
-      "totalStars": 25900,
+      "totalStars": 52075,
       "category": "star-skill"
     },
     {
@@ -196,7 +196,7 @@
       "name": "shadcn/ui Skill",
       "tagline": "做 Web Coding 时最常遇到按钮、表单、弹窗和数据表格，它能让 AI 更稳定地装组件、接样式。",
       "url": "https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/SKILL.md",
-      "totalStars": 0,
+      "totalStars": 118272,
       "category": "skill"
     },
     {
@@ -205,7 +205,7 @@
       "name": "归藏 PPT Skill",
       "tagline": "把横向翻页网页 PPT、杂志风页面和发布会式演示变成可复用 Skill，适合新手马上做出视觉成果。",
       "url": "https://github.com/op7418/guizang-ppt-skill",
-      "totalStars": 0,
+      "totalStars": 20350,
       "category": "skill"
     },
     {
@@ -214,7 +214,7 @@
       "name": "open-notebook",
       "tagline": "开源版 NotebookLM，适合把资料库、笔记、问答和摘要做成自己的知识工作流。",
       "url": "https://github.com/lfnovo/open-notebook",
-      "totalStars": 28800,
+      "totalStars": 35058,
       "category": "star-skill"
     },
     {
@@ -232,7 +232,7 @@
       "name": "impeccable",
       "tagline": "面向 AI harness 的设计语言项目，适合让 agent 输出更稳定、更像产品的界面。",
       "url": "https://github.com/pbakaus/impeccable",
-      "totalStars": 37100,
+      "totalStars": 43958,
       "category": "star-skill"
     },
     {
@@ -277,7 +277,7 @@
       "name": "飞书 / Lark CLI",
       "tagline": "飞书 CLI 能覆盖消息、文档、多维表格、日历、会议纪要、任务等，对中文团队特别实用。",
       "url": "https://github.com/larksuite/cli",
-      "totalStars": 0,
+      "totalStars": 15184,
       "category": "skill"
     },
     {
@@ -295,7 +295,7 @@
       "name": "OpenCLI",
       "tagline": "OpenCLI 把网站、桌面应用和公开 API 变成命令行入口，适合让 AI 代理稳定搜索、读取和操作。",
       "url": "https://github.com/jackwener/opencli",
-      "totalStars": 0,
+      "totalStars": 26158,
       "category": "skill"
     },
     {
@@ -304,7 +304,7 @@
       "name": "微信 wx-cli",
       "tagline": "wx-cli 适合把本地微信会话变成可搜索、可导出的资料源，但要特别注意隐私和授权边界。",
       "url": "https://github.com/jackwener/wx-cli",
-      "totalStars": 0,
+      "totalStars": 3838,
       "category": "skill"
     },
     {
@@ -322,7 +322,7 @@
       "name": "Supabase Agent Skills",
       "tagline": "新手做登录、数据库、权限、实时数据时很容易卡住，Supabase Skill 能把规范补上。",
       "url": "https://github.com/supabase/agent-skills",
-      "totalStars": 0,
+      "totalStars": 2317,
       "category": "skill"
     },
     {
@@ -331,7 +331,7 @@
       "name": "Hugging Face Skills",
       "tagline": "适合把模型、数据集、Gradio/Spaces demo 接到 AI Coding 流程里。",
       "url": "https://github.com/huggingface/skills",
-      "totalStars": 0,
+      "totalStars": 10782,
       "category": "skill"
     },
     {
@@ -340,7 +340,7 @@
       "name": "Sentry Agent Skills",
       "tagline": "上线后出错怎么办？Sentry 相关 Skill 适合定位错误、修复 issue 和维护 SDK 接入，不是项目起步时的默认项。",
       "url": "https://github.com/getsentry/skills",
-      "totalStars": 0,
+      "totalStars": 847,
       "category": "skill"
     },
     {
@@ -349,7 +349,7 @@
       "name": "Cloudflare Skills",
       "tagline": "Workers、Pages、KV、R2、D1 都很强，但对纯新手来说解释成本比 Vercel 高。",
       "url": "https://github.com/cloudflare/skills",
-      "totalStars": 0,
+      "totalStars": 2065,
       "category": "skill"
     },
     {
@@ -358,7 +358,7 @@
       "name": "Trail of Bits Skills",
       "tagline": "专业安全 Skill 非常有价值，但新手第一眼不一定能感到“马上好用”。",
       "url": "https://github.com/trailofbits/skills",
-      "totalStars": 0,
+      "totalStars": 6013,
       "category": "skill"
     },
     {
@@ -367,7 +367,7 @@
       "name": "Together AI Skills",
       "tagline": "适合开源模型推理和模型 API 项目，但不如 Claude / OpenAI / Hugging Face 容易被新手理解，先放观察位。",
       "url": "https://github.com/togethercomputer/skills",
-      "totalStars": 0,
+      "totalStars": 32,
       "category": "skill"
     },
     {
@@ -376,7 +376,7 @@
       "name": "Qt Agent Skills",
       "tagline": "Qt 官方研发团队的 Skill，适合桌面应用和嵌入式 UI，但不是大众新手优先项。",
       "url": "https://github.com/TheQtCompanyRnD/agent-skills",
-      "totalStars": 0,
+      "totalStars": 286,
       "category": "skill"
     }
   ]
