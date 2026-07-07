@@ -139,6 +139,8 @@ npm run fetch-skills
 
 ## 部署
 
+可复用的京东云自动部署接入文档见：[GitHub 自动部署到京东云 Nginx 端口](docs/jd-cloud-auto-deploy.md)。
+
 ### 京东云自动部署
 
 仓库包含 `.github/workflows/deploy-jd.yml`，会在以下情况自动部署到京东云 7870 站点：
