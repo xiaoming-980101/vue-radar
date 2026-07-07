@@ -118,5 +118,7 @@ jobs:
             echo "Deploy was skipped because JD_SSH_PASSWORD is not configured."
             exit 0
           fi
-          curl -fsS "$JD_PUBLIC_URL/index.html?sha=${GITHUB_SHA}" | grep -q '<div id="app"></div>'
-          curl -fsS "$JD_PUBLIC_URL/codex-uses.html?sha=${GITHUB_SHA}" | grep -q 'Codex 趣味用法'
+          curl -fsS -o /tmp/vue-radar-index.html "$JD_PUBLIC_URL/index.html?sha=${GITHUB_SHA}"
+          curl -fsS -o /tmp/vue-radar-codex.html "$JD_PUBLIC_URL/codex-uses.html?sha=${GITHUB_SHA}"
+          grep -q '<div id="app"></div>' /tmp/vue-radar-index.html
+          grep -q 'Codex 趣味用法' /tmp/vue-radar-codex.html
