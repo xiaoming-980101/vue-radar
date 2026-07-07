@@ -44,7 +44,8 @@ vue-radar/
 │   └── check-tagline.mjs    # 标签检查脚本
 ├── .github/
 │   └── workflows/
-│       └── update-trending.yml  # GitHub Actions 自动更新
+│       ├── update-trending.yml  # GitHub Actions 自动更新数据
+│       └── deploy-jd.yml        # GitHub Actions 自动部署京东云
 ├── index.html                # HTML 入口
 ├── vite.config.js            # Vite 配置
 └── package.json              # 依赖配置
@@ -137,6 +138,48 @@ npm run fetch-skills
 - **部署**：静态文件，可部署到任何 Web 服务器
 
 ## 部署
+
+### 京东云自动部署
+
+仓库包含 `.github/workflows/deploy-jd.yml`，会在以下情况自动部署到京东云 7870 站点：
+
+- 推送到 `main`
+- 手动运行 `Deploy JD Cloud`
+- `Update GitHub Trending` 自动数据更新成功后
+
+部署流程：
+
+1. `npm ci`
+2. `npm run build`
+3. 打包 `dist/`
+4. SSH 上传到京东云
+5. 备份 `/var/www/vue-radar`
+6. 覆盖最新静态文件
+7. `nginx -t && nginx -s reload`
+8. 访问首页和 `codex-uses.html` 做 smoke test
+
+首次启用前，需要在 GitHub 仓库设置里添加 Secret：
+
+```text
+Settings -> Secrets and variables -> Actions -> New repository secret
+```
+
+必填：
+
+```text
+JD_SSH_PASSWORD=京东云 root 密码
+```
+
+可选覆盖项：
+
+```text
+JD_HOST=111.228.44.255
+JD_PORT=22
+JD_USER=root
+JD_DEPLOY_PATH=/var/www/vue-radar
+JD_PUBLIC_URL=http://111.228.44.255:7870
+JD_HOST_FINGERPRINT=SHA256:uy22N6dK/kgwYyN4wenTv2duN19qgsdADQpXDHaNzmg
+```
 
 ### Vercel
 
