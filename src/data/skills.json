@@ -1,383 +1,500 @@
 {
-  "updatedAt": "2026-07-07T01:49:53.156Z",
+  "updatedAt": "2026-07-08T01:39:18.168Z",
   "skills": [
     {
       "id": "skill-1",
-      "rank": 1,
-      "name": "Superpowers",
-      "tagline": "把软件开发方法论、工作流和 agentic skills 打成一套增强包，适合先给 AI 装上“做事方法”。",
-      "url": "https://github.com/obra/superpowers",
-      "totalStars": 247773,
-      "category": "skill"
+      "rank": 22,
+      "name": "Cloudflare Skills",
+      "tagline": "Workers、Pages、KV、R2、D1 都很强，但对纯新手来说解释成本比 Vercel 高。",
+      "url": "https://github.com/cloudflare/skills",
+      "totalStars": 2070,
+      "category": "advanced",
+      "signal": "进阶云",
+      "language": "TypeScript"
     },
     {
       "id": "skill-2",
-      "rank": 1,
-      "name": "Claude Skills",
-      "tagline": "最容易向新手解释的 Skill 入口：让 Claude 在文档、设计、协作工具里按固定方法做事。",
-      "url": "https://claude.com/docs/skills/overview",
-      "totalStars": 0,
-      "category": "skill"
+      "rank": 23,
+      "name": "Trail of Bits Skills",
+      "tagline": "专业安全 Skill 非常有价值，但新手第一眼不一定能感到“马上好用”。",
+      "url": "https://github.com/trailofbits/skills",
+      "totalStars": 6019,
+      "category": "advanced",
+      "signal": "安全审计",
+      "language": "Python"
     },
     {
       "id": "skill-3",
-      "rank": 1,
-      "name": "headroom",
-      "tagline": "把工具输出、日志、文件和 RAG chunk 先压缩再交给 LLM，适合所有容易被 token 成本拖慢的 agent 工作流。",
-      "url": "https://github.com/chopratejas/headroom",
-      "totalStars": 57171,
-      "category": "star-skill"
+      "rank": 24,
+      "name": "Together AI Skills",
+      "tagline": "适合开源模型推理和模型 API 项目，但不如 Claude / OpenAI / Hugging Face 容易被新手理解，先放观察位。",
+      "url": "https://github.com/togethercomputer/skills",
+      "totalStars": 31,
+      "category": "advanced",
+      "signal": "模型服务",
+      "language": "Python"
     },
     {
       "id": "skill-4",
-      "rank": 2,
-      "name": "Anthropic Skills",
-      "tagline": "Claude Skill 的官方公开仓库，适合理解 Skill 的标准写法、触发方式和跨工具复用思路。",
-      "url": "https://github.com/anthropics/skills",
-      "totalStars": 158845,
-      "category": "skill"
+      "rank": 25,
+      "name": "Qt Agent Skills",
+      "tagline": "Qt 官方研发团队的 Skill，适合桌面应用和嵌入式 UI，但不是大众新手优先项。",
+      "url": "https://github.com/TheQtCompanyRnD/agent-skills",
+      "totalStars": 285,
+      "category": "advanced",
+      "signal": "特定栈",
+      "language": "QML"
     },
     {
       "id": "skill-5",
-      "rank": 2,
-      "name": "OpenAI Skills Catalog",
-      "tagline": "Codex 用户最该先看的官方目录，适合理解 Skill 怎么安装、怎么触发、怎么复用。",
-      "url": "https://github.com/openai/skills",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-6",
-      "rank": 2,
-      "name": "hermes-agent",
-      "tagline": "会随用户成长的 AI agent，强调长期记忆、工具和自我改进，适合观察 agent 产品形态。",
-      "url": "https://github.com/NousResearch/hermes-agent",
-      "totalStars": 210389,
-      "category": "star-skill"
-    },
-    {
-      "id": "skill-7",
-      "rank": 3,
-      "name": "OpenAI Skills Catalog",
-      "tagline": "Codex 用户最该先看的官方技能目录，用来理解怎么安装、触发和组合 Skill。",
-      "url": "https://github.com/openai/skills",
-      "totalStars": 23314,
-      "category": "skill"
-    },
-    {
-      "id": "skill-8",
-      "rank": 3,
-      "name": "find-skills",
-      "tagline": "当用户不知道该装什么 Skill 时，先让代理帮你找，这是最符合新手真实问题的入口。",
-      "url": "https://agentskills.to/",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-9",
-      "rank": 3,
-      "name": "last30days-skill",
-      "tagline": "让 agent 跨 Reddit、X、YouTube、HN、Polymarket 和网页做近 30 天研究，输出带来源摘要。",
-      "url": "https://github.com/mvanhorn/last30days-skill",
-      "totalStars": 49789,
-      "category": "star-skill"
-    },
-    {
-      "id": "skill-10",
-      "rank": 4,
-      "name": "Vercel Agent Skills",
-      "tagline": "网页项目做完后最需要预览、部署、检查和上线，Vercel 这一套非常适合新手拿结果。",
-      "url": "https://github.com/vercel-labs/agent-skills",
-      "totalStars": 28745,
-      "category": "skill"
-    },
-    {
-      "id": "skill-11",
-      "rank": 4,
-      "name": "Vercel Deploy Skills",
-      "tagline": "新手做完网页后最想要的就是公开链接。Vercel 相关 Skill 能把“本地作品”推到线上。",
-      "url": "https://github.com/vercel-labs/agent-skills",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-12",
-      "rank": 4,
-      "name": "ECC",
-      "tagline": "面向 Claude Code、Codex、Opencode、Cursor 等代理的性能优化系统，适合提升执行质量。",
-      "url": "https://github.com/affaan-m/ECC",
-      "totalStars": 226691,
-      "category": "star-skill"
-    },
-    {
-      "id": "skill-13",
-      "rank": 5,
-      "name": "GitHub CLI",
-      "tagline": "让 AI 能更顺地 clone、查 issue、看 release、开 PR 和管理项目来源，是复现开源项目的基本手脚。",
-      "url": "https://github.com/cli/cli",
-      "totalStars": 45152,
-      "category": "skill"
-    },
-    {
-      "id": "skill-14",
-      "rank": 5,
-      "name": "shadcn/ui Skill",
-      "tagline": "新手做 Web App 最容易用到的 UI Skill。它能让代理按项目配置正确添加组件。",
-      "url": "https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/SKILL.md",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-15",
-      "rank": 5,
-      "name": "markitdown",
-      "tagline": "把 PDF、PPT、Word 等文件转换成 Markdown，适合进入 AI 阅读、知识库和文档整理流程。",
-      "url": "https://github.com/microsoft/markitdown",
-      "totalStars": 163467,
-      "category": "star-skill"
-    },
-    {
-      "id": "skill-16",
-      "rank": 6,
-      "name": "OpenCLI",
-      "tagline": "把网站、平台和登录态浏览器变成 AI 能调用的 CLI，适合做资料抓取、网页操作和中文工作流。",
-      "url": "https://github.com/jackwener/OpenCLI",
-      "totalStars": 26158,
-      "category": "skill"
-    },
-    {
-      "id": "skill-17",
-      "rank": 6,
-      "name": "Figma Skills",
-      "tagline": "适合把设计稿、组件、变量和页面结构交给 AI 理解，减少“截图转代码”的瞎猜。",
-      "url": "https://claude.com/skills",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-18",
-      "rank": 6,
-      "name": "taste-skill",
-      "tagline": "给 AI 加一份审美判断，适合改善泛化、模板味、缺少品味的文案和视觉说明。",
-      "url": "https://github.com/Leonxlnx/taste-skill",
-      "totalStars": 58993,
-      "category": "star-skill"
-    },
-    {
-      "id": "skill-19",
-      "rank": 7,
-      "name": "Playwright Skill",
-      "tagline": "让 AI 真的打开浏览器测试按钮、输入框、响应式和流程，不再只靠“看起来能跑”。",
-      "url": "https://github.com/lackeyjb/playwright-skill",
-      "totalStars": 2875,
-      "category": "skill"
-    },
-    {
-      "id": "skill-20",
-      "rank": 7,
-      "name": "Canva Skills",
-      "tagline": "适合做海报、长图、分享图、PPT 视觉包装。对非工程新手尤其友好。",
-      "url": "https://claude.com/skills",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-21",
-      "rank": 7,
-      "name": "Agent-Reach",
-      "tagline": "给 AI agent 接入 Twitter、Reddit、YouTube、GitHub、小红书等信息源，适合做趋势研究。",
-      "url": "https://github.com/Panniantong/Agent-Reach",
-      "totalStars": 52075,
-      "category": "star-skill"
-    },
-    {
-      "id": "skill-22",
-      "rank": 8,
-      "name": "shadcn/ui Skill",
-      "tagline": "做 Web Coding 时最常遇到按钮、表单、弹窗和数据表格，它能让 AI 更稳定地装组件、接样式。",
-      "url": "https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/SKILL.md",
-      "totalStars": 118272,
-      "category": "skill"
-    },
-    {
-      "id": "skill-23",
-      "rank": 8,
-      "name": "归藏 PPT Skill",
-      "tagline": "把横向翻页网页 PPT、杂志风页面和发布会式演示变成可复用 Skill，适合新手马上做出视觉成果。",
-      "url": "https://github.com/op7418/guizang-ppt-skill",
-      "totalStars": 20350,
-      "category": "skill"
-    },
-    {
-      "id": "skill-24",
-      "rank": 8,
-      "name": "open-notebook",
-      "tagline": "开源版 NotebookLM，适合把资料库、笔记、问答和摘要做成自己的知识工作流。",
-      "url": "https://github.com/lfnovo/open-notebook",
-      "totalStars": 35058,
-      "category": "star-skill"
-    },
-    {
-      "id": "skill-25",
-      "rank": 9,
-      "name": "Vercel Web Design Guidelines",
-      "tagline": "新手最容易做出“能跑但不好用”的页面，这个 Skill 负责检查可访问性、焦点态和移动端。",
-      "url": "https://github.com/vercel-labs/agent-skills",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-26",
-      "rank": 9,
-      "name": "impeccable",
-      "tagline": "面向 AI harness 的设计语言项目，适合让 agent 输出更稳定、更像产品的界面。",
-      "url": "https://github.com/pbakaus/impeccable",
-      "totalStars": 43958,
-      "category": "star-skill"
-    },
-    {
-      "id": "skill-27",
-      "rank": 10,
-      "name": "Notion Skills",
-      "tagline": "把需求、资料、任务、项目管理和知识库交给 AI 处理，新手不用反复复制粘贴上下文。",
-      "url": "https://claude.com/skills",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-28",
-      "rank": 11,
-      "name": "Document Skills",
-      "tagline": "Word、Excel、PowerPoint、PDF 这类 Skill 对新手非常直接：把资料变成文档、表格和汇报。",
-      "url": "https://github.com/anthropics/skills",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-29",
-      "rank": 12,
-      "name": "Atlassian / Jira Skills",
-      "tagline": "把需求、任务、缺陷和进度接入 AI，适合已经在团队工具里工作的用户。",
-      "url": "https://claude.com/skills",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-30",
-      "rank": 13,
-      "name": "Zapier Skills",
-      "tagline": "把常见 SaaS 串起来，新手不用先学 API，也能理解“让 AI 帮我自动处理流程”。",
-      "url": "https://claude.com/skills",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-31",
-      "rank": 14,
-      "name": "飞书 / Lark CLI",
-      "tagline": "飞书 CLI 能覆盖消息、文档、多维表格、日历、会议纪要、任务等，对中文团队特别实用。",
-      "url": "https://github.com/larksuite/cli",
-      "totalStars": 15184,
-      "category": "skill"
-    },
-    {
-      "id": "skill-32",
-      "rank": 15,
-      "name": "GitHub CLI",
-      "tagline": "GitHub CLI 是 PR、issue、release、repo 自动化的基础工具，适合和代码 review Skill 配合。",
-      "url": "https://cli.github.com/",
-      "totalStars": 0,
-      "category": "skill"
-    },
-    {
-      "id": "skill-33",
-      "rank": 16,
-      "name": "OpenCLI",
-      "tagline": "OpenCLI 把网站、桌面应用和公开 API 变成命令行入口，适合让 AI 代理稳定搜索、读取和操作。",
-      "url": "https://github.com/jackwener/opencli",
-      "totalStars": 26158,
-      "category": "skill"
-    },
-    {
-      "id": "skill-34",
-      "rank": 17,
-      "name": "微信 wx-cli",
-      "tagline": "wx-cli 适合把本地微信会话变成可搜索、可导出的资料源，但要特别注意隐私和授权边界。",
-      "url": "https://github.com/jackwener/wx-cli",
-      "totalStars": 3838,
-      "category": "skill"
-    },
-    {
-      "id": "skill-35",
       "rank": 18,
       "name": "Playwright Skill",
       "tagline": "让 AI 真打开浏览器测试页面，而不是只在代码里猜。适合按钮、表单、移动端、canvas 项目。",
       "url": "https://github.com/lackeyjb/playwright-skill",
-      "totalStars": 0,
-      "category": "skill"
+      "totalStars": 2879,
+      "category": "builders",
+      "signal": "真机检查",
+      "language": "JavaScript"
     },
     {
-      "id": "skill-36",
+      "id": "skill-6",
       "rank": 19,
       "name": "Supabase Agent Skills",
       "tagline": "新手做登录、数据库、权限、实时数据时很容易卡住，Supabase Skill 能把规范补上。",
       "url": "https://github.com/supabase/agent-skills",
-      "totalStars": 2317,
-      "category": "skill"
+      "totalStars": 2321,
+      "category": "builders",
+      "signal": "数据库",
+      "language": "TypeScript"
     },
     {
-      "id": "skill-37",
+      "id": "skill-7",
       "rank": 20,
       "name": "Hugging Face Skills",
       "tagline": "适合把模型、数据集、Gradio/Spaces demo 接到 AI Coding 流程里。",
       "url": "https://github.com/huggingface/skills",
       "totalStars": 10782,
-      "category": "skill"
+      "category": "builders",
+      "signal": "AI Demo",
+      "language": "Python"
     },
     {
-      "id": "skill-38",
+      "id": "skill-8",
       "rank": 21,
       "name": "Sentry Agent Skills",
       "tagline": "上线后出错怎么办？Sentry 相关 Skill 适合定位错误、修复 issue 和维护 SDK 接入，不是项目起步时的默认项。",
       "url": "https://github.com/getsentry/skills",
-      "totalStars": 847,
-      "category": "skill"
+      "totalStars": 849,
+      "category": "builders",
+      "signal": "错误监控",
+      "language": "Python"
+    },
+    {
+      "id": "skill-9",
+      "rank": 14,
+      "name": "飞书 / Lark CLI",
+      "tagline": "飞书 CLI 能覆盖消息、文档、多维表格、日历、会议纪要、任务等，对中文团队特别实用。",
+      "url": "https://github.com/larksuite/cli",
+      "totalStars": 15241,
+      "category": "cli",
+      "signal": "中文办公",
+      "language": "Go"
+    },
+    {
+      "id": "skill-10",
+      "rank": 15,
+      "name": "GitHub CLI",
+      "tagline": "GitHub CLI 是 PR、issue、release、repo 自动化的基础工具，适合和代码 review Skill 配合。",
+      "url": "https://cli.github.com/",
+      "totalStars": 0,
+      "category": "cli",
+      "signal": "代码协作"
+    },
+    {
+      "id": "skill-11",
+      "rank": 16,
+      "name": "OpenCLI",
+      "tagline": "OpenCLI 把网站、桌面应用和公开 API 变成命令行入口，适合让 AI 代理稳定搜索、读取和操作。",
+      "url": "https://github.com/jackwener/opencli",
+      "totalStars": 26241,
+      "category": "cli",
+      "signal": "网页自动化",
+      "language": "JavaScript"
+    },
+    {
+      "id": "skill-12",
+      "rank": 17,
+      "name": "微信 wx-cli",
+      "tagline": "wx-cli 适合把本地微信会话变成可搜索、可导出的资料源，但要特别注意隐私和授权边界。",
+      "url": "https://github.com/jackwener/wx-cli",
+      "totalStars": 3850,
+      "category": "cli",
+      "signal": "私域资料",
+      "language": "Rust"
+    },
+    {
+      "id": "skill-13",
+      "rank": 5,
+      "name": "shadcn/ui Skill",
+      "tagline": "新手做 Web App 最容易用到的 UI Skill。它能让代理按项目配置正确添加组件。",
+      "url": "https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/SKILL.md",
+      "totalStars": 118379,
+      "category": "creative",
+      "signal": "UI 爆款",
+      "language": "TypeScript"
+    },
+    {
+      "id": "skill-14",
+      "rank": 6,
+      "name": "Figma Skills",
+      "tagline": "适合把设计稿、组件、变量和页面结构交给 AI 理解，减少“截图转代码”的瞎猜。",
+      "url": "https://claude.com/skills",
+      "totalStars": 0,
+      "category": "creative",
+      "signal": "设计稿"
+    },
+    {
+      "id": "skill-15",
+      "rank": 7,
+      "name": "Canva Skills",
+      "tagline": "适合做海报、长图、分享图、PPT 视觉包装。对非工程新手尤其友好。",
+      "url": "https://claude.com/skills",
+      "totalStars": 0,
+      "category": "creative",
+      "signal": "视觉素材"
+    },
+    {
+      "id": "skill-16",
+      "rank": 8,
+      "name": "归藏 PPT Skill",
+      "tagline": "把横向翻页网页 PPT、杂志风页面和发布会式演示变成可复用 Skill，适合新手马上做出视觉成果。",
+      "url": "https://github.com/op7418/guizang-ppt-skill",
+      "totalStars": 20520,
+      "category": "creative",
+      "signal": "社区爆款",
+      "language": "HTML"
+    },
+    {
+      "id": "skill-17",
+      "rank": 9,
+      "name": "Vercel Web Design Guidelines",
+      "tagline": "新手最容易做出“能跑但不好用”的页面，这个 Skill 负责检查可访问性、焦点态和移动端。",
+      "url": "https://github.com/vercel-labs/agent-skills",
+      "totalStars": 28789,
+      "category": "creative",
+      "signal": "页面质检",
+      "language": "JavaScript"
+    },
+    {
+      "id": "skill-18",
+      "rank": 1,
+      "name": "Superpowers",
+      "tagline": "把软件开发方法论、工作流和 agentic skills 打成一套增强包，适合先给 AI 装上“做事方法”。",
+      "url": "https://github.com/obra/superpowers",
+      "totalStars": 248725,
+      "category": "must-have",
+      "signal": "含金量最高",
+      "language": "Shell"
+    },
+    {
+      "id": "skill-19",
+      "rank": 2,
+      "name": "Anthropic Skills",
+      "tagline": "Claude Skill 的官方公开仓库，适合理解 Skill 的标准写法、触发方式和跨工具复用思路。",
+      "url": "https://github.com/anthropics/skills",
+      "totalStars": 159199,
+      "category": "must-have",
+      "signal": "官方生态",
+      "language": "Python"
+    },
+    {
+      "id": "skill-20",
+      "rank": 3,
+      "name": "OpenAI Skills Catalog",
+      "tagline": "Codex 用户最该先看的官方技能目录，用来理解怎么安装、触发和组合 Skill。",
+      "url": "https://github.com/openai/skills",
+      "totalStars": 23349,
+      "category": "must-have",
+      "signal": "Codex 底座",
+      "language": "Python"
+    },
+    {
+      "id": "skill-21",
+      "rank": 4,
+      "name": "Addy Osmani Agent Skills",
+      "tagline": "一套生产级工程 Skill，覆盖代码理解、实现、测试、重构和上线检查，适合直接提升 AI Coding 质量。",
+      "url": "https://github.com/addyosmani/agent-skills",
+      "totalStars": 72185,
+      "category": "must-have",
+      "signal": "工程增强",
+      "language": "JavaScript"
+    },
+    {
+      "id": "skill-22",
+      "rank": 5,
+      "name": "NVIDIA SkillSpector",
+      "tagline": "安装第三方 Skill 前先做安全扫描，检查恶意命令、可疑网络请求和危险权限。",
+      "url": "https://github.com/NVIDIA/SkillSpector",
+      "totalStars": 12322,
+      "category": "must-have",
+      "signal": "安全必看",
+      "language": "Python"
+    },
+    {
+      "id": "skill-23",
+      "rank": 6,
+      "name": "Vercel Agent Skills",
+      "tagline": "网页项目做完后最需要预览、部署、检查和上线，Vercel 这一套非常适合新手拿结果。",
+      "url": "https://github.com/vercel-labs/agent-skills",
+      "totalStars": 28789,
+      "category": "must-have",
+      "signal": "上线必备",
+      "language": "JavaScript"
+    },
+    {
+      "id": "skill-24",
+      "rank": 7,
+      "name": "GitHub CLI",
+      "tagline": "让 AI 能更顺地 clone、查 issue、看 release、开 PR 和管理项目来源，是复现开源项目的基本手脚。",
+      "url": "https://cli.github.com/",
+      "totalStars": 0,
+      "category": "must-have",
+      "signal": "复现源码"
+    },
+    {
+      "id": "skill-25",
+      "rank": 8,
+      "name": "OpenCLI",
+      "tagline": "把网站、平台和登录态浏览器变成 AI 能调用的 CLI，适合做资料抓取、网页操作和中文工作流。",
+      "url": "https://github.com/jackwener/OpenCLI",
+      "totalStars": 26241,
+      "category": "must-have",
+      "signal": "网页手脚",
+      "language": "JavaScript"
+    },
+    {
+      "id": "skill-26",
+      "rank": 9,
+      "name": "Playwright Skill",
+      "tagline": "让 AI 真的打开浏览器测试按钮、输入框、响应式和流程，不再只靠“看起来能跑”。",
+      "url": "https://github.com/lackeyjb/playwright-skill",
+      "totalStars": 2879,
+      "category": "must-have",
+      "signal": "真机验收",
+      "language": "JavaScript"
+    },
+    {
+      "id": "skill-27",
+      "rank": 10,
+      "name": "shadcn/ui Skill",
+      "tagline": "做 Web Coding 时最常遇到按钮、表单、弹窗和数据表格，它能让 AI 更稳定地装组件、接样式。",
+      "url": "https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/SKILL.md",
+      "totalStars": 118379,
+      "category": "must-have",
+      "signal": "Web 组件",
+      "language": "TypeScript"
+    },
+    {
+      "id": "skill-28",
+      "rank": 0,
+      "name": "Vibe Coding Radar Skill",
+      "tagline": "把这张项目雷达变成 Codex 能读取的 Skill：先判断新手目标，再推荐项目、工具、验收路径和开工提示词。",
+      "url": "https://github.com/lsy928256297-ops/vibe-coding-radar/tree/main/skills/vibe-coding-radar",
+      "totalStars": 1,
+      "category": "radar-skill",
+      "signal": "Project picker",
+      "language": "HTML"
+    },
+    {
+      "id": "skill-29",
+      "rank": 1,
+      "name": "codebase-memory-mcp",
+      "tagline": "把代码库索引成持久知识图谱，让 Codex / Claude Code 更快理解文件关系、入口和修改影响面。",
+      "url": "https://github.com/DeusData/codebase-memory-mcp",
+      "totalStars": 28029,
+      "category": "star-skill",
+      "growth": "近 7 天 +3,933",
+      "language": "C"
+    },
+    {
+      "id": "skill-30",
+      "rank": 2,
+      "name": "SkillSpector",
+      "tagline": "NVIDIA 开源的 Skill 安全扫描器，用来检查恶意模式、危险命令和可疑权限，特别适合新手先扫第三方仓库。",
+      "url": "https://github.com/NVIDIA/SkillSpector",
+      "totalStars": 12322,
+      "category": "star-skill",
+      "growth": "近 7 天 +1,387",
+      "language": "Python"
+    },
+    {
+      "id": "skill-31",
+      "rank": 3,
+      "name": "pm-skills",
+      "tagline": "100+ 产品、增长、策略、发布类 agentic skills，适合让 AI 帮你做需求拆解、产品规划和上线材料。",
+      "url": "https://github.com/phuryn/pm-skills",
+      "totalStars": 22922,
+      "category": "star-skill",
+      "growth": "近 7 天 +1,145"
+    },
+    {
+      "id": "skill-32",
+      "rank": 4,
+      "name": "归藏 PPT Skill",
+      "tagline": "中文创作者很容易理解的高展示度 Skill：把内容做成网页 PPT、发布页、长图和社媒封面。",
+      "url": "https://github.com/op7418/guizang-ppt-skill",
+      "totalStars": 20520,
+      "category": "star-skill",
+      "growth": "近 7 天 +887",
+      "language": "HTML"
+    },
+    {
+      "id": "skill-33",
+      "rank": 5,
+      "name": "awesome-agent-skills",
+      "tagline": "跨 Claude Code、Codex、Gemini CLI、Cursor 的 Skill 目录，适合新手继续找可安装的能力包。",
+      "url": "https://github.com/VoltAgent/awesome-agent-skills",
+      "totalStars": 27539,
+      "category": "star-skill",
+      "growth": "近 7 天 +699"
+    },
+    {
+      "id": "skill-34",
+      "rank": 6,
+      "name": "OpenCLI",
+      "tagline": "把网站、平台和登录态浏览器变成 AI 能调用的 CLI，适合资料抓取、网页操作和中文工作流。",
+      "url": "https://github.com/jackwener/OpenCLI",
+      "totalStars": 26241,
+      "category": "star-skill",
+      "growth": "近 7 天 +643",
+      "language": "JavaScript"
+    },
+    {
+      "id": "skill-35",
+      "rank": 7,
+      "name": "claude-skills",
+      "tagline": "社区维护的 Claude / Codex / Gemini / Cursor 多工具 Skill 合集，适合找通用工作流模板。",
+      "url": "https://github.com/alirezarezvani/claude-skills",
+      "totalStars": 21507,
+      "category": "star-skill",
+      "growth": "近 7 天 +606",
+      "language": "Python"
+    },
+    {
+      "id": "skill-36",
+      "rank": 8,
+      "name": "飞书 / Lark CLI",
+      "tagline": "飞书官方 CLI，覆盖 Messenger、Docs、Base、Sheets、Calendar 等场景，中文团队很容易用起来。",
+      "url": "https://github.com/larksuite/cli",
+      "totalStars": 15241,
+      "category": "star-skill",
+      "growth": "近 7 天 +342",
+      "language": "Go"
+    },
+    {
+      "id": "skill-37",
+      "rank": 9,
+      "name": "NVIDIA Skills",
+      "tagline": "NVIDIA 官方 AI agent skills 集合，适合关注模型、GPU、推理和 NVIDIA 生态的新手继续探索。",
+      "url": "https://github.com/NVIDIA/skills",
+      "totalStars": 2291,
+      "category": "star-skill",
+      "growth": "近 7 天 +312",
+      "language": "Python"
+    },
+    {
+      "id": "skill-38",
+      "rank": 10,
+      "name": "OpenAI Skills Catalog",
+      "tagline": "Codex 官方 Skill 目录，适合新手先理解 Skill 如何安装、触发、组合和复用。",
+      "url": "https://github.com/openai/skills",
+      "totalStars": 23349,
+      "category": "star-skill",
+      "growth": "近 7 天 +312",
+      "language": "Python"
     },
     {
       "id": "skill-39",
-      "rank": 22,
-      "name": "Cloudflare Skills",
-      "tagline": "Workers、Pages、KV、R2、D1 都很强，但对纯新手来说解释成本比 Vercel 高。",
-      "url": "https://github.com/cloudflare/skills",
-      "totalStars": 2065,
-      "category": "skill"
+      "rank": 1,
+      "name": "Claude Skills",
+      "tagline": "最容易向新手解释的 Skill 入口：让 Claude 在文档、设计、协作工具里按固定方法做事。",
+      "url": "https://claude.com/docs/skills/overview",
+      "totalStars": 0,
+      "category": "starter",
+      "signal": "最高优先"
     },
     {
       "id": "skill-40",
-      "rank": 23,
-      "name": "Trail of Bits Skills",
-      "tagline": "专业安全 Skill 非常有价值，但新手第一眼不一定能感到“马上好用”。",
-      "url": "https://github.com/trailofbits/skills",
-      "totalStars": 6013,
-      "category": "skill"
+      "rank": 2,
+      "name": "OpenAI Skills Catalog",
+      "tagline": "Codex 用户最该先看的官方目录，适合理解 Skill 怎么安装、怎么触发、怎么复用。",
+      "url": "https://github.com/openai/skills",
+      "totalStars": 23349,
+      "category": "starter",
+      "signal": "Codex 官方",
+      "language": "Python"
     },
     {
       "id": "skill-41",
-      "rank": 24,
-      "name": "Together AI Skills",
-      "tagline": "适合开源模型推理和模型 API 项目，但不如 Claude / OpenAI / Hugging Face 容易被新手理解，先放观察位。",
-      "url": "https://github.com/togethercomputer/skills",
-      "totalStars": 32,
-      "category": "skill"
+      "rank": 3,
+      "name": "find-skills",
+      "tagline": "当用户不知道该装什么 Skill 时，先让代理帮你找，这是最符合新手真实问题的入口。",
+      "url": "https://agentskills.to/",
+      "totalStars": 0,
+      "category": "starter",
+      "signal": "找技能"
     },
     {
       "id": "skill-42",
-      "rank": 25,
-      "name": "Qt Agent Skills",
-      "tagline": "Qt 官方研发团队的 Skill，适合桌面应用和嵌入式 UI，但不是大众新手优先项。",
-      "url": "https://github.com/TheQtCompanyRnD/agent-skills",
-      "totalStars": 286,
-      "category": "skill"
+      "rank": 4,
+      "name": "Vercel Deploy Skills",
+      "tagline": "新手做完网页后最想要的就是公开链接。Vercel 相关 Skill 能把“本地作品”推到线上。",
+      "url": "https://github.com/vercel-labs/agent-skills",
+      "totalStars": 28789,
+      "category": "starter",
+      "signal": "上线必备",
+      "language": "JavaScript"
+    },
+    {
+      "id": "skill-43",
+      "rank": 10,
+      "name": "Notion Skills",
+      "tagline": "把需求、资料、任务、项目管理和知识库交给 AI 处理，新手不用反复复制粘贴上下文。",
+      "url": "https://claude.com/skills",
+      "totalStars": 0,
+      "category": "workflow",
+      "signal": "知识库"
+    },
+    {
+      "id": "skill-44",
+      "rank": 11,
+      "name": "Document Skills",
+      "tagline": "Word、Excel、PowerPoint、PDF 这类 Skill 对新手非常直接：把资料变成文档、表格和汇报。",
+      "url": "https://github.com/anthropics/skills",
+      "totalStars": 159199,
+      "category": "workflow",
+      "signal": "Office",
+      "language": "Python"
+    },
+    {
+      "id": "skill-45",
+      "rank": 12,
+      "name": "Atlassian / Jira Skills",
+      "tagline": "把需求、任务、缺陷和进度接入 AI，适合已经在团队工具里工作的用户。",
+      "url": "https://claude.com/skills",
+      "totalStars": 0,
+      "category": "workflow",
+      "signal": "项目协作"
+    },
+    {
+      "id": "skill-46",
+      "rank": 13,
+      "name": "Zapier Skills",
+      "tagline": "把常见 SaaS 串起来，新手不用先学 API，也能理解“让 AI 帮我自动处理流程”。",
+      "url": "https://claude.com/skills",
+      "totalStars": 0,
+      "category": "workflow",
+      "signal": "自动化"
     }
   ]
 }
